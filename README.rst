@@ -162,7 +162,7 @@ Bibtex:
 
     @article{muttio_spo,
     title = {A Supervised Parallel Optimisation Framework for
-             Metaheuristic Algorithms 2023},
+             Metaheuristic Algorithms},
     author = {Muttio, Eugenio J. and Dettmer, Wulf G. and
               Clarke, Jac and Peri\'c, Djordje and
               Ren, Zhaoxin and Fletcher, Lloyd},
