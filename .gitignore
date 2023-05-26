@@ -87,6 +87,9 @@ target/
 # Mypy cache
 .mypy_cache/
 
+# Zenodo
+.zenodo.json
+
 # Code specifics ------------------------------
 # Results directory
 results/
