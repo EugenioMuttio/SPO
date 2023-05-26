@@ -20,10 +20,11 @@ The supervised strategy outperforms isolated algorithms, finding reproducible, o
 finding problem with numerous local minima, and can be applied to a wide range of problems.
 
 .. figure:: SPO.png
-    :scale: 30 %
+    :scale: 50%
     :align: center
 
-    upervised parallel structure and roles of the processors in the proposed strategy.
+    Supervised parallel structure and roles of the processors in the proposed strategy.
+
 
 Code structure
 ==============
@@ -130,19 +131,19 @@ visualised by running:
 A similar convergence plot to the following should be obtained:
 
 .. figure:: examples/path_find/Run30_1/0/plots/Convlog_f.jpg
-    :scale: 20 %
+    :scale: 30%
     :align: center
 
     Convergence plot for the path finding problem example (30 variables).
 
 .. figure:: examples/path_find/Run30_1/0/plots/ConvTimeZoom_f.jpg
-    :scale: 20 %
+    :scale: 30%
     :align: center
 
     Convergence plot over time for the path finding problem example (30 variables).
 
 .. figure:: examples/path_find/Run30_1/0/plots/Sol.jpg
-    :scale: 30 %
+    :scale: 40%
     :align: center
 
     Solution of the path finding problem example (30 variables).
