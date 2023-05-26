@@ -96,3 +96,5 @@ results/
 results/path_find/*
 !results/path_find/.gitkeep
 
+# Release versions
+release/
