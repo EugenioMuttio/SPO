@@ -92,9 +92,11 @@ target/
 
 # Code specifics ------------------------------
 # Results directory
-results/
-results/path_find/*
 !results/path_find/.gitkeep
+results/path_find/*
+results/
+
+
 
 # Release versions
 release/
