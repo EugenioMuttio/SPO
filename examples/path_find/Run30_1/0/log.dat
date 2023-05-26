@@ -1,0 +1,7 @@
+Problem Definition - General
+Optimisers: [<class 'lib.opt.so.mcs.MCS'>, <class 'lib.opt.so.mcs_v1.MCSV1'>, <class 'lib.opt.so.mcs_v2.MCSV2'>, <class 'lib.opt.so.pymoo_ga.PymooGA'>, <class 'lib.opt.so.pymoo_pso.PymooPSO'>, <class 'lib.opt.so.pymoo_pso_v1.PymooPSOV1'>, <class 'lib.opt.so.pymoo_pso_v2.PymooPSOV2'>, <class 'lib.opt.so.pymoo_cmaes.PymooCMAES'>]
+checkpoint: 10
+n_devices: 5
+max_runs: 1000
+n_rep: 100
+n_param: 30
