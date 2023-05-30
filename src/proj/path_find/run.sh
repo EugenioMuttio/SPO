@@ -42,7 +42,7 @@ stall_tol=$(echo "0.001")
 n_stall=4
 
 # Experiment ID
-exp_id=2
+exp_id=1
 
 # ---- MPI ---- #
 # Number of devices: n_workers + 1 (supervisor)

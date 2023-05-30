@@ -1,8 +1,10 @@
 # Contribution Guidelines
 
+Please fork this repository and create a pull request to contribute to this project.
+
 ## Branch Flow
 
-This repository follows the GitLab Flow branching strategy for managing branches.
+This repository follows the Git Flow branching strategy for managing branches.
 
 - The `main` branch represents the production-ready code.
 - The `develop` branch serves as the main development branch.
