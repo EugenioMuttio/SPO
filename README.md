@@ -20,7 +20,7 @@ The supervised strategy outperforms isolated algorithms, finding reproducible, o
 finding problem with numerous local minima, and can be applied to a wide range of problems.
 
 <p align="center">
-<img src="SPO.png" width="50%" alt> 
+<img src="SPO.png" width="70%" alt> 
 </p>
 <p align="center">
 <em> Supervised parallel structure and roles of the processors in the proposed strategy. </em>
@@ -135,21 +135,21 @@ visualised by running:
 
 A similar convergence plot to the following should be obtained:
 <p align="center">
-<img src="examples/path_find/Run30_1/0/plots/Convlog_f.jpg" width="50%" alt> 
+<img src="examples/path_find/Run30_1/0/plots/Convlog_f.jpg" width="60%" alt> 
 </p>
 <p align="center">
 <em> Convergence plot for the path finding problem example (30 variables). </em>
 </p>
 
 <p align="center">
-<img src="examples/path_find/Run30_1/0/plots/ConvTimeZoom_f.jpg" width="50%" alt> 
+<img src="examples/path_find/Run30_1/0/plots/ConvTimeZoom_f.jpg" width="60%" alt> 
 </p>
 <p align="center">
 <em> Convergence plot over time for the path finding problem example (30 variables). </em>
 </p>
 
 <p align="center">
-<img align="center" src="examples/path_find/Run30_1/0/plots/Sol.jpg" width="30%" alt> 
+<img src="examples/path_find/Run30_1/0/plots/Sol.jpg" width="50%" alt> 
 </p>
 <p align="center">
 <em> Solution of the path finding problem example (30 variables). </em>
