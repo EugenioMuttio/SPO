@@ -135,21 +135,21 @@ visualised by running:
 
 A similar convergence plot to the following should be obtained:
 <p align="center">
-<img src="/Eugenio/PhD/Projects/SPO/examples/path_find/Run30_1/0/plots/Convlog_f.jpg" width="70%" alt> 
+<img src="examples/path_find/Run30_1/0/plots/Convlog_f.jpg" width="70%" alt> 
 </p>
 <p align="center">
 <em> Convergence plot for the path finding problem example (30 variables). </em>
 </p>
 
 <p align="center">
-<img src="/Eugenio/PhD/Projects/SPO/examples/path_find/Run30_1/0/plots/ConvTimeZoom_f.jpg" width="70%" alt> 
+<img src="examples/path_find/Run30_1/0/plots/ConvTimeZoom_f.jpg" width="70%" alt> 
 </p>
 <p align="center">
 <em> Convergence plot over time for the path finding problem example (30 variables). </em>
 </p>
 
 <p align="center">
-<img src="/Eugenio/PhD/Projects/SPO/examples/path_find/Run30_1/0/plots/Sol.jpg" width="50%" alt> 
+<img src="examples/path_find/Run30_1/0/plots/Sol.jpg" width="50%" alt> 
 </p>
 <p align="center">
 <em> Solution of the path finding problem example (30 variables). </em>
