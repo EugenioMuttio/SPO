@@ -65,7 +65,7 @@ class Plots(object):
 
         self.font_factor = 1.8
 
-        self.fig_format = 'jpg'
+        self.fig_format = 'svg'
         
         self.dpi = 150
 

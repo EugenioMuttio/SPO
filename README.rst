@@ -130,19 +130,19 @@ visualised by running:
 
 A similar convergence plot to the following should be obtained:
 
-.. figure:: examples/path_find/Run30_1/0/plots/Convlog_f.jpg
+.. figure:: examples/path_find/Run30_1/0/plots/Convlog_f.eps
     :scale: 30%
     :align: center
 
     Convergence plot for the path finding problem example (30 variables).
 
-.. figure:: examples/path_find/Run30_1/0/plots/ConvTimeZoom_f.jpg
+.. figure:: examples/path_find/Run30_1/0/plots/ConvTimeZoom_f.eps
     :scale: 30%
     :align: center
 
     Convergence plot over time for the path finding problem example (30 variables).
 
-.. figure:: examples/path_find/Run30_1/0/plots/Sol.jpg
+.. figure:: examples/path_find/Run30_1/0/plots/Sol.eps
     :scale: 40%
     :align: center
 
