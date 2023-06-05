@@ -18,7 +18,7 @@ class FilesMan(object):
         # Path
         current_path_aux = Path(os.path.abspath(os.getcwd()))
 
-        # Necessary to include results ouiutside src folder
+        # Necessary to include results outside src folder
         self.current_path = current_path_aux.parents[2]
 
         # Containing folders to save run information
