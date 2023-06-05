@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Code Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)](https://gitlab.com/EugenioMuttio/SPO)
-[![Last Updated](https://img.shields.io/badge/Last%20Updated-May%2030%2C%202023-green.svg)](https://gitlab.com/EugenioMuttio/SPO)
+[![Last Updated](https://img.shields.io/badge/Last%20Updated-Jun%2005%2C%202023-green.svg)](https://gitlab.com/EugenioMuttio/SPO)
 
 
 This repository contains code to utilize a parallel optimization
