@@ -56,7 +56,7 @@ class Report(object):
         """
 
         # Read Convergence
-        #self.conv = np.genfromtxt(self.conv_path, delimiter="\t")
+        self.conv = np.genfromtxt(self.conv_path, delimiter="\t")
 
         # Read Global Convergence
         self.global_conv = \
@@ -89,7 +89,7 @@ class Report(object):
         # plot.global_convergence(self.global_conv)
 
         # Plot global best trajectory:
-        plot.path_2d(self.sol, proj)
+        plot.pack_plot(self.sol, proj)
 
     def report_comparison(self, proj, prob_id, runs_file, best_run_id, opt_id,
                           avg_fmin, std_dev, n_comp):
