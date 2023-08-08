@@ -31,9 +31,10 @@ from lib.other.args_file import init_args
 from lib.other.tools import Timer
 
 # Project Library
-from plib.so_path import SOPathPlanning
+from plib.so_pack import SOPackOpt
 from plib.report import Report
 from plib.proj_args_file import init_proj_args
+from plib.plots import Plots
 
 # --------------------------------------------------------------- #
 #          MAIN FILE FOR CONTROLLED PARALLEL OPTIMISATION         #
@@ -75,16 +76,16 @@ args = proj_parser.parse_args(extras_optim, namespace=args_optim)
 # ---------------------------- Project ----------------------------- #
 
 # Project object
-proj = SOPathPlanning(args)
+proj = SOPackOpt(args)
 
 # Select function to optimise
-proj.optim_func = proj.path_2d
+proj.optim_func = proj.pack_obj
 
 # ------------------------ Files Management ------------------------ #
 
 if args.run_id == 'A':
 
-    prob_id = 'path_find/'
+    prob_id = 'pack_opt/'
     args.run_id = prob_id + 'Run' + str(args.n_param) + '_' + str(args.exp_id)
 
 files_man = FilesMan(args)
@@ -128,7 +129,8 @@ if args.report == 0:
     optim.optim_list = [MCS, MCSV1, MCSV2,
                         PymooGA,
                         PymooPSO, PymooPSOV1, PymooPSOV2,
-                        PymooCMAES]
+                        PymooCMAES, PymooDE]
+    #optim.optim_list = [MCS]
     # Run optimiser
     optim.run()
 
@@ -150,37 +152,28 @@ elif args.report == 1:
 
     # Optional: Plot comparison results for selected train (args.plot)
     # Statistical information to give to comparison plots ----------------
-    # opt_flag = True: standalone optimiser comparison
-    # opt_flag = False: Wrapper comparison
-    # run_name = 'PSO200'
-    # n_runs = 10
-    # rep.report_avg(run_name, prob_id, n_runs, opt_flag=True, n_workers=15)
-
-    # Run
-    # best fmin: 31.46183684
-    # Average best fmin: 31.941254391
-    # std fmin: 0.9109991570992515
-    # median fmin: 31.4634747
-    # max fmin: 34.43262239
+    #run_name = 'MCS200'
+    #n_runs = 10
+    #rep.report_avg(run_name, prob_id, n_runs, opt_flag=True, n_workers=15)
 
     # Comparison Plots ---------------------------------------------------
     # Subfolder name
-    # n_comp = 10
-    # # Runs to compare
-    # runs_file = ['PSO200_5', 'GA200_7', 'CMAES200_1','MCS200_1','DE200_1']
-    # # Best run id inside each folder of runs_file
-    # best_run_id = ['4', '13', '4', '11', '6']
-    # # Optimiser name
-    # opt_id = ['PymooPSO', 'PymooGA', 'PymooCMAES', 'MCS', 'PymooDE']
-    #
-    # # Average fmin and std_dev for each run obtained in terminal using
-    # # the report_avg function and introduced manually here
-    # avg_fmin= [98.2314, 65.2243, 284.9940, 66.8578, 123.0248, 31.9412]
-    # std_dev = [30.2439, 23.3537, 52.7251, 14.7948, 3.5586, 0.911]
+    #n_comp = 1
+    # Runs to compare
+    #runs_file = ['PSO200_5', 'GA200_7', 'CMAES200_1','MCS200_1']
+    # Best run id inside each folder of runs_file
+    #best_run_id = ['4', '13', '4', '11']
+    # Optimiser name
+    #opt_id = ['PymooPSO', 'PymooGA', 'PymooCMAES', 'MCS']
+
+    # Average fmin and std_dev for each run obtained in terminal using
+    # the report_avg function and introduced manually here
+    #avg_fmin= [98.2314, 65.2243, 284.9940, 66.8578, 41.0430]
+    #std_dev = [30.2439, 23.3537, 52.7251, 14.7948, 4.3824]
 
     # Call report comparison function
-    # rep.report_comparison(proj, prob_id, runs_file, best_run_id, opt_id,
-    #                       avg_fmin, std_dev, n_comp)
+    #rep.report_comparison(proj, prob_id, runs_file, best_run_id, opt_id,
+    #                      avg_fmin, std_dev, n_comp)
 
 
 
