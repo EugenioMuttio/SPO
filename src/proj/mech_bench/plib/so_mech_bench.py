@@ -15,6 +15,9 @@ class SOMechBench(object):
 
         The functions included in this class are:
         - Three bars problem
+        - Pressure vessel design
+        - Thrust design
+        - Wind farm layout design
         Args:
             args: argparse object with parameters
         """

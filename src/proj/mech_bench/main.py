@@ -45,7 +45,10 @@ from plib.proj_args_file import init_proj_args
 
 # Objective Functions:
 
-# - Path Finding Optimisation
+# - Three Bars
+# - Vessel Design
+# - Thrust Design
+# - Wind Farm
 
 # Optimisation Algorithms:
 
