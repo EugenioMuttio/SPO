@@ -8,17 +8,13 @@ class init(object):
 
         # Problem parameters
         self.n_param = args.n_param
-        self.lower_limit = args.lower_limit
-        self.upper_limit = args.upper_limit
         self.pop_size = 0
         self.n_obj = args.n_obj
 
         self.seed = seed
 
         # Population Initialisation
-        self.param_range = np.zeros((2, self.n_param))
-        self.param_range[0, :] = self.lower_limit * np.ones(self.n_param)
-        self.param_range[1, :] = self.upper_limit * np.ones(self.n_param)
+        self.param_range = np.ones((2, self.n_param))
 
         self.pop_init = []
 

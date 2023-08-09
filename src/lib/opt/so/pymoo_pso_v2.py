@@ -15,8 +15,7 @@ class PymooPSOV2(object):
         General problem parameters:
 
         n_param: Number of trainable parameters per agent/individual
-        lower_limit: Parameter range limit
-        upper_limit: Parameter range limit
+
         max_gen: Maximum generations
 
         checkpoint: At "n" checkpoints, a state is saved and a MPI
@@ -48,8 +47,6 @@ class PymooPSOV2(object):
 
         # Problem parameters
         self.n_param = args.n_param
-        self.lower_limit = args.lower_limit
-        self.upper_limit = args.upper_limit
 
         # Optimiser Parameters
         self.pop_size = args.pso_pop_size_v2
