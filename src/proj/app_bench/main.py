@@ -32,6 +32,7 @@ from lib.other.tools import Timer
 
 # Project Library
 from plib.so_mech_bench import SOMechBench
+from plib.so_power_bench import SOPowerBench
 from plib.report import Report
 from plib.proj_args_file import init_proj_args
 
@@ -45,9 +46,12 @@ from plib.proj_args_file import init_proj_args
 
 # Objective Functions:
 
+# Mechanical Benchmark Problems:
 # - Three Bars
 # - Vessel Design
 # - Thrust Design
+
+# Power Benchmark Problems:
 # - Wind Farm
 
 # Optimisation Algorithms:
@@ -87,7 +91,7 @@ proj.optim_func = proj.three_bars
 
 if args.run_id == 'A':
 
-    prob_id = 'mech_bench/three_bars/'
+    prob_id = 'app_bench/three_bars/'
     args.run_id = prob_id + 'Run' + str(args.n_param) + '_' + str(args.exp_id)
 
 files_man = FilesMan(args)
