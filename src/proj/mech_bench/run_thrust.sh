@@ -60,7 +60,7 @@ if [ "$report" -eq 0 ]; then
   --exp_id $exp_id
 else
   # ---- Run to Report ---- #
-  python3 main.py --report 0 \
+  python3 main.py --report 1 \
   --n_param $n_param --lower_limit_1 $lower_limit_1 --upper_limit_1 $upper_limit_1 \
   --lower_limit_2 $lower_limit_2 --upper_limit_2 $upper_limit_2 \
   --checkpoint $checkpoint --max_pop_from_rep $max_pop_from_rep --n_rep $n_rep \

@@ -78,13 +78,13 @@ args = proj_parser.parse_args(extras_optim, namespace=args_optim)
 proj = SOMechBench(args)
 
 # Select function to optimise
-proj.optim_func = proj.wind_farm
+proj.optim_func = proj.three_bars
 
 # ------------------------ Files Management ------------------------ #
 
 if args.run_id == 'A':
 
-    prob_id = 'mech_bench/wind_farm/'
+    prob_id = 'mech_bench/three_bars/'
     args.run_id = prob_id + 'Run' + str(args.n_param) + '_' + str(args.exp_id)
 
 files_man = FilesMan(args)
@@ -125,9 +125,9 @@ if args.report == 0:
 
     # Three bars --------------------------------
     # lower limit
-    #init.param_range[0, :] = args.lower_limit_1
+    init.param_range[0, :] = args.lower_limit_1
     # upper limit
-    #init.param_range[1, :] = args.upper_limit_1
+    init.param_range[1, :] = args.upper_limit_1
 
     # Vessel design -----------------------------
     # lower limit
@@ -146,10 +146,10 @@ if args.report == 0:
     # init.param_range[1, 3:] = args.upper_limit_2
 
     # Wind Farm -----------------------------
-    # lower limit
-    init.param_range[0, :] = args.lower_limit_1
-    # upper limit
-    init.param_range[1, :] = args.upper_limit_1
+    # # lower limit
+    # init.param_range[0, :] = args.lower_limit_1
+    # # upper limit
+    # init.param_range[1, :] = args.upper_limit_1
 
     # ------------------------- Optimiser ------------------------ #
     optim = Wrapper(args, init, proj, files_man, seed)

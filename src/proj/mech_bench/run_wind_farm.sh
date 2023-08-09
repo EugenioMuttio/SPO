@@ -2,14 +2,14 @@
 
 # ---- Problem Definition ---- #
 # Number of parameters
-n_param=4
+n_param=30
 # Parameter limits
 lower_limit_1=$(echo "40.0")
 upper_limit_1=$(echo "1960.0")
 
 # ---- Optimiser - General ---- #
 # Number of Gen to save state / Communications
-checkpoint=10
+checkpoint=1
 
 # ---- Repository ---- #
 # [0,1] max porcentage of population from rep
@@ -57,7 +57,7 @@ if [ "$report" -eq 0 ]; then
   --exp_id $exp_id
 else
   # ---- Run to Report ---- #
-  python3 main.py --report 0 \
+  python3 main.py --report $report \
   --n_param $n_param --lower_limit_1 $lower_limit_1 --upper_limit_1 $upper_limit_1 \
   --checkpoint $checkpoint --max_pop_from_rep $max_pop_from_rep --n_rep $n_rep \
   --init_prob $init_prob --kill_flag $kill_flag --p_n $p_n --n_0 $n_0 \

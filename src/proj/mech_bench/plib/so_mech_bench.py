@@ -52,11 +52,12 @@ class SOMechBench(object):
         f = l * (x[1] + 2 * np.sqrt(2) * x[0])
 
         # Constraints
-        g_1 = x[1] * P / (2 * x[1] * x[0] + 2 * np.sqrt(2) * x[0] ** 2) - sigma
-
-        g_2 = (x[1] + np.sqrt(2) * x[0]) * P / (2 * x[1] * x[0] + 2 * np.sqrt(2) * x[0] ** 2) - sigma
-
-        g_3 = P / (x[0] + np.sqrt(2) * x[1]) - sigma
+        #g_1 = x[1] * P / (2 * x[1] * x[0] + 2 * np.sqrt(2) * x[0] ** 2) - sigma
+        g_1 = (np.sqrt(2) * x[0] + x[1]) * P / (np.sqrt(2) * x[0] ** 2 + 2 * x[0] * x[1]) - sigma
+        #g_2 = (x[1] + np.sqrt(2) * x[0]) * P / (2 * x[1] * x[0] + 2 * np.sqrt(2) * x[0] ** 2) - sigma
+        g_2 = x[1] * P/ (np.sqrt(2) * x[1] ** 2 + 2 * x[0] * x[1]) - sigma
+        #g_3 = P / (x[0] + np.sqrt(2) * x[1]) - sigma
+        g_3 = P / (np.sqrt(2) * x[1] + x[0]) - sigma
 
         # Objective evaluation
         k_1 = 1e6
@@ -259,11 +260,11 @@ class SOMechBench(object):
         g_i = np.array(g_i)
 
         # Objective evaluation
-        k_1 = np.ones(g_i.shape) * 1e2
+        k_1 = np.ones(g_i.shape) * 1e6
 
         g_i_p = 0
         for i in range(g_i.shape[0]):
-            g_i_p += k_1 * (max(0, g_i[i])) ** 2
+            g_i_p += k_1[i] * (max(0, g_i[i])) ** 2
 
         obj = f + g_i_p
 
@@ -295,7 +296,7 @@ class SOMechBench(object):
         for i in range(N):
             interval_c[i] = c * (1 - vel_def[i])
 
-        n_ws = (rated_speed - cut_in_speed) / 0.3
+        n_ws = int((rated_speed - cut_in_speed) / 0.3)
 
         power_eva = 0.0
 
@@ -303,10 +304,10 @@ class SOMechBench(object):
             for j in range(1, n_ws + 1):
                 v_j_1 = cut_in_speed + (j-1) * 0.3
                 v_j = cut_out_speed + j * 0.3
-                power_eva +=  1500 * np.exp((v_j_1 + v_j) / 2 -7.5) / \
-                               (5 + np.exp((v_j_1 + v_j) / 2 - 7.5)) * \
-                               (np.exp(-(v_j_1 / (interval_c[i]**k))) -
-                                np.exp(-(v_j / (interval_c[i]**k))))
+                power_eva += 1500 * np.exp((v_j_1 + v_j) / 2 -7.5) / \
+                             (5 + np.exp((v_j_1 + v_j) / 2 - 7.5)) * \
+                             (np.exp(-(v_j_1 / (interval_c[i]**k))) -
+                              np.exp(-(v_j / (interval_c[i]**k))))
 
             power_eva += 1500 * (np.exp(-(rated_speed / (interval_c[i]**k)))
                                - np.exp(-(cut_out_speed / (interval_c[i]**k))))
@@ -335,7 +336,7 @@ class SOMechBench(object):
         affected = False
         Tijx = (coordinate[2 * downstream_wind_turbine] - coordinate[2 * upstream_wind_turbine])
         Tijy = (coordinate[2 * downstream_wind_turbine + 1] - coordinate[2 * upstream_wind_turbine + 1])
-        dij = np.cosd(theta) * Tijx + np.sind(theta) * Tijy
+        dij = np.cos(np.deg2rad(theta)) * Tijx + np.sin(np.deg2rad(theta)) * Tijy
         lij = np.sqrt(Tijx ** 2 + Tijy ** 2 - dij ** 2)
         l = dij * kappa + R
 
