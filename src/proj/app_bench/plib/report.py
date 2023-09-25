@@ -182,4 +182,33 @@ class Report(object):
             print('max opt fmin: ', max_opt_fmin)
 
 
+    def report_optim_analysis(self, run_name, prob_id, n_runs, n_comp):
+        """
+        Function activated when --report is 1.
+        This function requires to define --nrun num, where num is the
+        test experiment that is selected to plot results.
+
+        Returns:
+            A group of plots within a directory called 'Plots' inside
+            the run selected.
+        """
+
+        # Plot object
+        plot = Plots(self.args, self.files_man)
+
+        # Read wrapper Convergence
+        global_conv = []
+
+        for ri in range(1, n_runs+1):
+            run_id = self.files_man.results_path + '/' + prob_id + \
+                     run_name + '_' + str(ri) + '/0'
+            conv_path = run_id + '/' + 'conv.dat'
+            global_conv.append(
+                np.genfromtxt(conv_path,
+                              dtype=(
+                                  int, int, int, float, int, float, int, int, int,
+                                  float, 'S11', 'S10', 'S10'),
+                              delimiter="\t"))
+
+        plot.optim_analysis_comp(global_conv, prob_id, n_comp, n_runs)
 

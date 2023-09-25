@@ -194,12 +194,25 @@ class PymooCMAES(object):
         # Taking first sample from pop to initialise f min
         local_sol = self.pop_init[0, :]
         local_fmin = np.nan_to_num(self.pymoo_prob.eval_obj(local_sol),
-                                   nan=10000)
+                                   nan=1e10)
 
         while self.algorithm.has_next():
 
             # ask the algorithm for the next solution to be evaluated
             pop = self.algorithm.ask()
+
+            # Easy solution for DE pop ask() and infills problem
+            pop_none = False
+            if pop is None:
+                pop_none = True
+
+            elif pop.size < self.pop_size:
+                pop_none = True
+
+            i = 0
+            while pop_none and i < self.pop_size:
+                pop = pop.merge(pop, pop[i])
+                i += 1
 
             # evaluate the individuals using the algorithm's evaluator
             # (necessary to count evaluations for termination)
@@ -267,6 +280,8 @@ class PymooCMAES(object):
 
             filename = self.run_path + '/' + 'conv.dat'
             conv_file = open(filename, "a")
+            conv_file.write(str(self.name))
+            conv_file.write("\t")
             conv_file.write(str(self.igen))
             conv_file.write("\t")
             conv_file.write(str(self.num_eval))

@@ -51,21 +51,43 @@ class Plots(object):
                        'black': np.array([33, 37, 41]) / 255,
                        'grey': np.array([222, 226, 230]) / 255}
 
-        self.opt_colors = {'PymooPSO': np.array([0, 95, 115]) / 255,
+        self.light_colors = {'red': np.array([255, 89 * 2, 94 * 2]) / 255,
+                         'blue': np.array([25 * 4, 130 + 100, 255]) / 255,
+                         'green': np.array([138 + 70, 230, 150]) / 255,
+                         'yellow': np.array([255, 240, 58 * 2]) / 255,
+                         'purple': np.array([106 + 50, 76 * 2, 147 + 50]) / 255,
+                         'black': np.array([33, 37, 41]) / 255,
+                         'grey': np.array([222, 226, 230]) / 255}
+
+        self.c_k = list(self.colors.keys())
+
+        self.opt_colors = {'MCSV2': np.array([208, 0, 0]) / 255,
+                           'MCSV1': np.array([157, 2, 8]) / 255,
+                           'MCS': np.array([106, 4, 15]) / 255,
+                           'PymooPSO': np.array([0, 95, 115]) / 255,
                            'PymooPSOV1': np.array([10, 147, 150]) / 255,
                            'PymooPSOV2': np.array([148, 210, 189]) / 255,
                            'PymooGA': np.array([238, 155, 0]) / 255,
                            'PymooDE': np.array([202, 103, 2]) / 255,
                            'PymooCMAES': np.array([187, 62, 3]) / 255,
-                           'MCS': np.array([208, 0, 0]) / 255,
-                           'MCSV1': np.array([157, 2, 8]) / 255,
-                           'MCSV2': np.array([106, 4, 15]) / 255,
                            'Best': np.array([33, 37, 41]) / 255,
                            'SPO': np.array([0, 128, 0]) / 255}
 
+        self.opt_dark_colors = {'MCSV2': np.array([208, 0, 0]) / 255 * 0.4,
+                               'MCSV1': np.array([157, 2, 8]) / 255 * 0.4,
+                               'MCS': np.array([106, 4, 15]) / 255 * 0.4,
+                               'PymooPSO': np.array([0, 95, 115]) / 255 * 0.4,
+                               'PymooPSOV1': np.array([10, 147, 150]) / 255 * 0.4,
+                               'PymooPSOV2': np.array([148, 210, 189]) / 255 * 0.4,
+                               'PymooGA': np.array([238, 155, 0]) / 255 * 0.4,
+                               'PymooDE': np.array([202, 103, 2]) / 255 * 0.4,
+                               'PymooCMAES': np.array([187, 62, 3]) / 255 * 0.4,
+                               'Best': np.array([33, 37, 41]) / 255 * 0.4,
+                               'SPO': np.array([0, 128, 0]) / 255 * 0.4}
+
         self.font_factor = 1.8
 
-        self.fig_format = 'jpg'
+        self.fig_format = 'pdf'
         
         self.dpi = 1000
 
@@ -88,7 +110,7 @@ class Plots(object):
         self.ylz1, self.ylz2 = 30.0, 65.0
         
         # Figure size
-        self.h_dim = 15.0
+        self.h_dim = 13.0
         self.v_dim = 6.0
 
     def global_convergence_simple(self, conv_data):
@@ -241,7 +263,7 @@ class Plots(object):
                          prop={"size": 10 * self.font_factor},
                          ncol=1,
                          frameon=False, loc='upper right',
-                         bbox_to_anchor=(1.35, 0.99))
+                         bbox_to_anchor=(1.45, 0.99))
 
         figname = 'ConvZoom_s.' + self.fig_format
         path = self.rep_path + figname
@@ -294,7 +316,7 @@ class Plots(object):
                          prop={"size": 10 * self.font_factor},
                          ncol=1,
                          frameon=False, loc='upper right',
-                         bbox_to_anchor=(1.35, 0.99))
+                         bbox_to_anchor=(1.45, 0.99))
 
         figname = 'Convlog_s.' + self.fig_format
         path = self.rep_path + figname
@@ -347,7 +369,7 @@ class Plots(object):
                          prop={"size": 10 * self.font_factor},
                          ncol=1,
                          frameon=False, loc='upper right',
-                         bbox_to_anchor=(1.35, 0.99))
+                         bbox_to_anchor=(1.45, 0.99))
 
         figname = 'Convloglog_s.' + self.fig_format
         path = self.rep_path + figname
@@ -394,7 +416,7 @@ class Plots(object):
                          fancybox=False, prop={"size": 10 * self.font_factor},
                          ncol=1,
                          frameon=False, loc='upper right',
-                         bbox_to_anchor=(1.35, 0.99))
+                         bbox_to_anchor=(1.45, 0.99))
 
         figname = 'ConvTimeZoom_s.' + self.fig_format
         path = self.rep_path + figname
@@ -443,7 +465,7 @@ class Plots(object):
                          fancybox=False, prop={"size": 10 * self.font_factor},
                          ncol=1,
                          frameon=False, loc='upper right',
-                         bbox_to_anchor=(1.35, 0.99))
+                         bbox_to_anchor=(1.45, 0.99))
 
         figname = 'ConvTimelog_s.' + self.fig_format
         path = self.rep_path + figname
@@ -493,13 +515,13 @@ class Plots(object):
                             np.divide(aux_run_time[:, 2], 3600)
             time_unit = '[hrs]'
 
-        elif max_hours < 5 and max_min > 5:
+        elif max_hours < 5:
             run_time_unit = np.multiply(aux_run_time[:, 0], 60) + \
                             aux_run_time[:, 1] + \
                             np.divide(aux_run_time[:, 2], 60)
             time_unit = '[min]'
 
-        elif max_hours < 1 and max_min <= 5:
+        elif max_hours < 1 and max_min <= 1:
             run_time_unit = np.multiply(aux_run_time[:, 0], 3600) + \
                             np.multiply(aux_run_time[:, 1], 60) + \
                             aux_run_time[:, 2]
@@ -556,12 +578,12 @@ class Plots(object):
                                 np.divide(run_time[:, 1], 60) + \
                                 np.divide(run_time[:, 2], 3600)
 
-            elif max_hours < 5 and max_min > 5:
+            elif max_hours < 5:
                 run_time_unit = np.multiply(run_time[:, 0], 60) + \
                                 run_time[:, 1] + \
                                 np.divide(run_time[:, 2], 60)
 
-            elif max_hours < 1 and max_min <= 5:
+            elif max_hours < 1 and max_min <= 0:
                 run_time_unit = np.multiply(run_time[:, 0], 3600) + \
                                 np.multiply(run_time[:, 1], 60) + \
                                 run_time[:, 2]
@@ -595,7 +617,7 @@ class Plots(object):
         # sorting dict by key
 
         my_keys = list(data_dict.keys())
-        my_keys.sort(reverse=True)
+        my_keys.sort(reverse=False)
         data_dict = {key: data_dict[key] for key in my_keys}
 
         # Minimum Loss
@@ -672,7 +694,7 @@ class Plots(object):
                          prop={"size": 10 * self.font_factor},
                          ncol=1,
                          frameon=False, loc='upper right',
-                         bbox_to_anchor=(1.35, 0.99))
+                         bbox_to_anchor=(1.45, 0.99))
 
         figname = 'ConvZoom_f.' + self.fig_format
         path = self.rep_path + figname
@@ -720,7 +742,7 @@ class Plots(object):
                          prop={"size": 10 * self.font_factor},
                          ncol=1,
                          frameon=False, loc='upper right',
-                         bbox_to_anchor=(1.35, 0.99))
+                         bbox_to_anchor=(1.45, 0.99))
 
         figname = 'Convlog_f.' + self.fig_format
         path = self.rep_path + figname
@@ -768,7 +790,7 @@ class Plots(object):
                          prop={"size": 10 * self.font_factor},
                          ncol=1,
                          frameon=False, loc='upper right',
-                         bbox_to_anchor=(1.35, 0.99))
+                         bbox_to_anchor=(1.45, 0.99))
 
         figname = 'Convloglog_f.' + self.fig_format
         path = self.rep_path + figname
@@ -817,7 +839,7 @@ class Plots(object):
                          fancybox=False, prop={"size": 10 * self.font_factor},
                          ncol=1,
                          frameon=False, loc='upper right',
-                         bbox_to_anchor=(1.35, 0.99))
+                         bbox_to_anchor=(1.45, 0.99))
 
         figname = 'ConvTimeZoom_f.' + self.fig_format
         path = self.rep_path + figname
@@ -868,7 +890,7 @@ class Plots(object):
                          fancybox=False, prop={"size": 10 * self.font_factor},
                          ncol=1,
                          frameon=False, loc='upper right',
-                         bbox_to_anchor=(1.35, 0.99))
+                         bbox_to_anchor=(1.45, 0.99))
 
         figname = 'ConvTimelog_f.' + self.fig_format
         path = self.rep_path + figname
@@ -918,7 +940,7 @@ class Plots(object):
                             np.divide(aux_run_time[:, 2], 3600)
             time_unit = '[hrs]'
 
-        elif max_hours < 5 and max_min > 5:
+        elif max_hours < 5:
             run_time_unit = np.multiply(aux_run_time[:, 0], 60) + \
                             aux_run_time[:, 1] + \
                             np.divide(aux_run_time[:, 2], 60)
@@ -994,6 +1016,11 @@ class Plots(object):
                 data_dict[opt_name[di]][6].append(runs_gen[di])
                 data_dict[opt_name[di]][7].append(runs_fmin[di])
 
+        # sorting dict by key
+
+        my_keys = list(data_dict.keys())
+        my_keys.sort(reverse=False)
+        data_dict = {key: data_dict[key] for key in my_keys}
 
         # Best run
         best_run = int(conv_data[-1][6])
@@ -1170,7 +1197,7 @@ class Plots(object):
                          prop={"size": 10 * self.font_factor},
                          ncol=1,
                          frameon=False, loc='upper right',
-                         bbox_to_anchor=(1.35, 0.99))
+                         bbox_to_anchor=(1.45, 0.99))
 
         figname = 'ConvZoom.' + self.fig_format
         path = self.rep_path + figname
@@ -1248,7 +1275,7 @@ class Plots(object):
                          fancybox=False, prop={"size": 10 * self.font_factor},
                          ncol=1,
                          frameon=False, loc='upper right',
-                         bbox_to_anchor=(1.35, 0.99))
+                         bbox_to_anchor=(1.45, 0.99))
 
         figname = 'Convlog.' + self.fig_format
         path = self.rep_path + figname
@@ -1323,7 +1350,7 @@ class Plots(object):
         ax.get_xaxis().set_major_formatter(
             matplotlib.ticker.LogFormatterSciNotation())
 
-        ax.tick_params(axis='both', labelsize=14 * self.font_factor)
+        ax.tick_params(axis='both', labelsize=12 * self.font_factor)
 
         fig.tight_layout()
 
@@ -1331,7 +1358,7 @@ class Plots(object):
                          fancybox=False, prop={"size": 10 * self.font_factor},
                          ncol=1,
                          frameon=False, loc='upper right',
-                         bbox_to_anchor=(1.35, 0.99))
+                         bbox_to_anchor=(1.45, 0.99))
 
         figname = 'Convloglog.' + self.fig_format
         path = self.rep_path + figname
@@ -1360,14 +1387,14 @@ class Plots(object):
 
         ax.grid()
 
-        ax.tick_params(axis='both', labelsize=14 * self.font_factor)
+        ax.tick_params(axis='both', labelsize=12 * self.font_factor)
 
         fig.tight_layout()
 
         lgd = plt.legend(handles=handles, labels=labels,
                          fancybox=False, prop={"size": 12}, ncol=1,
                          frameon=False, loc='upper right',
-                         bbox_to_anchor=(1.35, 0.99))
+                         bbox_to_anchor=(1.45, 0.99))
 
         figname = 'InitLoss.' + self.fig_format
         path = self.rep_path + figname
@@ -1398,8 +1425,8 @@ class Plots(object):
                 ax.plot(runs_data[ri][3], runs_data[ri][2], "o",
                         color=self.opt_colors[runs_data[ri][4]], markersize=5)
 
-            ax.plot(runs_data[ri][3], runs_data[ri][6], "_",
-                    color=self.opt_colors["Best"], markersize=8)
+            # ax.plot(runs_data[ri][3], runs_data[ri][6], "_",
+            #         color=self.opt_colors["Best"], markersize=8)
 
         fmin_aux = fmin[0]
         run_time_unit_aux = run_time_unit[0]
@@ -1455,19 +1482,19 @@ class Plots(object):
 
         fig.tight_layout()
 
-        handles[0] = plt.plot([], '-^', color=self.opt_colors[best_name[-1]],
+        handles[0] = plt.plot([], '^', color=self.opt_colors[best_name[-1]],
                               markersize=7.5)[0]
 
         if best_init[-1] > 0:
             handles[0] = \
-                plt.plot([], '-^', color=self.opt_colors[best_name[-1]],
+                plt.plot([], '^', color=self.opt_colors[best_name[-1]],
                          markersize=7.5)[0]
 
         lgd = plt.legend(handles=handles, labels=labels,
                          fancybox=False, prop={"size": 10 * self.font_factor},
                          ncol=1,
                          frameon=False, loc='upper right',
-                         bbox_to_anchor=(1.35, 0.99))
+                         bbox_to_anchor=(1.45, 0.99))
 
         figname = 'ConvTimeZoom.' + self.fig_format
         path = self.rep_path + figname
@@ -1499,8 +1526,8 @@ class Plots(object):
                 ax.plot(runs_data[ri][3], runs_data[ri][2], "o",
                             color=self.opt_colors[runs_data[ri][4]], markersize=5)
 
-            ax.plot(runs_data[ri][3], runs_data[ri][6], "_",
-                        color=self.opt_colors["Best"], markersize=8)
+            # ax.plot(runs_data[ri][3], runs_data[ri][6], "_",
+            #             color=self.opt_colors["Best"], markersize=8)
 
         fmin_aux = fmin[0]
         run_time_unit_aux = run_time_unit[0]
@@ -1550,25 +1577,25 @@ class Plots(object):
         ax.set_yscale('log')
         ax.grid()
 
-        ax.tick_params(axis='both', labelsize=14 * self.font_factor)
+        ax.tick_params(axis='both', labelsize=12 * self.font_factor)
 
         plt.ylim(self.yl1, self.yl2)
 
         fig.tight_layout()
 
-        handles[0] = plt.plot([], '-^', color=self.opt_colors[best_name[-1]],
+        handles[0] = plt.plot([], '^', color=self.opt_colors[best_name[-1]],
                               markersize=7.5)[0]
 
         if best_init[-1] > 0:
             handles[0] = \
-                plt.plot([], '-^', color=self.opt_colors[best_name[-1]],
+                plt.plot([], '^', color=self.opt_colors[best_name[-1]],
                          markersize=7.5)[0]
 
         lgd = plt.legend(handles=handles, labels=labels,
                          fancybox=False, prop={"size": 10 * self.font_factor},
                          ncol=1,
                          frameon=False, loc='upper right',
-                         bbox_to_anchor=(1.35, 0.99))
+                         bbox_to_anchor=(1.45, 0.99))
 
         figname = 'ConvTime.' + self.fig_format
         path = self.rep_path + figname
@@ -2040,3 +2067,608 @@ class Plots(object):
         path = plot_path + figname
         fig_error.savefig(path, bbox_inches='tight', format=self.fig_format, dpi=self.dpi)
         plt.close(fig_error)
+
+    def hyper_plots(self, prob_id, fmin_list, avg_fmin_list,
+                    std_dev_list, name_list, n_comp, ylabel, ylim, col_n):
+
+        # Plot path
+        plot_path = self.results_path + '/' + prob_id + \
+                    'Comp' + str(self.n_param) + '_' + str(n_comp)
+        self.files_man.create_folder(plot_path)
+
+        fig, ax = plt.subplots(nrows=2, ncols=3, figsize=(18, 10))
+
+        x_label = ['$p$', '$\\bar{N}_{\\rm stall}$', '$stall~tolerance$',
+                   '$N_{\\bar{\\epsilon}}$', '$Checkpoint$', '$\\nu$']
+        x_ticks = [
+            [1, 2, 3, 4, 5],
+            [1, 5, 10, 20, 30],
+            [0.9, 0.1, 0.01, 0.001, 0.0001],
+            [1, 5, 20, 50, 100],
+            [10, 50, 100, 500, 1000],
+            [0.1, 0.25, 0.5, 0.75, 1.0]]
+
+        handles = []
+        labels = []
+
+        for li in range(len(name_list)):
+            fmin = fmin_list[li]
+            avg_fmin = avg_fmin_list[li]
+            std_dev = std_dev_list[li]
+            name = name_list[li]
+            m = 0
+            for i in range(2):
+                for j in range(3):
+                    # Plot p_n fmin, avg_fmin, std_dev
+                    if m == 2 or m == 4:
+
+                        ax[i, j].semilogx(x_ticks[m], avg_fmin[m, :],
+                                      color=self.colors[self.c_k[col_n]], linewidth=3)
+                        ax[i, j].fill_between(x_ticks[m], avg_fmin[m, :],
+                                              avg_fmin[m, :] + std_dev[m, :],
+                                              color=self.light_colors[self.c_k[col_n]])
+                        ax[i, j].fill_between(x_ticks[m], avg_fmin[m, :],
+                                              avg_fmin[m, :] - std_dev[m, :],
+                                              color=self.light_colors[self.c_k[col_n]])
+                        ax[i, j].set_xscale('log')
+                        ax[i, j].semilogx(x_ticks[m], fmin[m, :], 'o',
+                                          color=self.colors[self.c_k[col_n]],
+                                          linewidth=3, markersize=6)
+
+                    else:
+
+                        ax[i, j].plot(x_ticks[m], avg_fmin[m, :],
+                                      color=self.colors[self.c_k[col_n]], linewidth=3)
+                        ax[i, j].fill_between(x_ticks[m], avg_fmin[m, :],
+                                              avg_fmin[m, :] + std_dev[m, :],
+                                              color=self.light_colors[self.c_k[col_n]])
+                        ax[i, j].fill_between(x_ticks[m], avg_fmin[m, :],
+                                              avg_fmin[m, :] - std_dev[m, :],
+                                              color=self.light_colors[self.c_k[col_n]])
+                        ax[i, j].plot(x_ticks[m], fmin[m, :], 'o',
+                                      color=self.colors[self.c_k[col_n]],
+                                      linewidth=3, markersize=6)
+                    ax[i, j].set_xticks(x_ticks[m])
+                    ax[i, j].set_ylabel(ylabel, fontsize=14 * self.font_factor)
+                    ax[i, j].set_xlabel(x_label[m], fontsize=14 * self.font_factor)
+                    ax[i, j].tick_params(axis='both', labelsize=14 * self.font_factor)
+                    ax[i, j].set_ylim(ylim)
+                    m += 1
+
+            handles.append(
+                plt.plot([], 'o-', color=self.colors[self.c_k[col_n]], markersize=6)[0])
+            # handles.append(
+            #     plt.plot([], '-', color=self.colors[self.c_k[li]], markersize=6,linewidth=3 )[0])
+            # handles.append(
+            #     plt.plot([], '-', color=self.light_colors[self.c_k[li]],  markersize=6)[0])
+
+
+            labels.append(ylabel + ': Best, $\\mu$ and $\\sigma$')
+
+        # lgd = fig.legend(handles=handles, labels=labels,
+        #                       fancybox=False,
+        #                       prop={"size": 10 * self.font_factor},
+        #                       ncol=len(labels),
+        #                       frameon=False, loc='upper center',
+        #                       bbox_to_anchor=(0.5, 1.05))
+
+
+        figname = '/Hyper' + ylabel + '.' + self.fig_format
+        path = plot_path + figname
+        fig.savefig(path,
+                    bbox_inches='tight', format=self.fig_format,
+                    dpi=self.dpi) #bbox_extra_artists=(lgd,),
+        plt.close(fig)
+
+    def optim_analysis(self,  conv_data):
+
+        """
+        Plot the convergence plot (loss)
+        Args:
+            loss (ndarray): array with the convergence data
+            (0) Gen (1) Eval (2) Fmin (3) Time in hr:min:sec
+        """
+
+        # Convergence data
+        n_data = conv_data.shape[0]
+        n_runs = []
+        runs_gen = []
+        runs_fmin = []
+        max_gen = []
+        fmin = []
+        init_count = []
+        best_init = []
+        run_time = np.zeros((1, 3))
+        opt_name = []
+        best_name = []
+        cost_ref = []
+
+        # Max Time
+        aux = conv_data[-1][10].decode('ASCII')
+        aux_b = aux.split(':')
+        aux_c = np.array(aux_b).astype(float)
+        aux_d = aux_c.reshape((1, 3))
+        aux_run_time = np.zeros((1, 3))
+        aux_run_time = np.concatenate((aux_run_time, aux_d), axis=0)
+
+        # Time
+        max_hours = np.max(aux_run_time[:, 0])
+        max_min = np.max(aux_run_time[:, 1])
+
+        if max_hours >= 5:
+            run_time_unit = aux_run_time[:, 0] + \
+                            np.divide(aux_run_time[:, 1], 60) + \
+                            np.divide(aux_run_time[:, 2], 3600)
+            time_unit = '[hrs]'
+
+        elif max_hours < 5:
+            run_time_unit = np.multiply(aux_run_time[:, 0], 60) + \
+                            aux_run_time[:, 1] + \
+                            np.divide(aux_run_time[:, 2], 60)
+            time_unit = '[min]'
+
+        elif max_hours < 1 and max_min <= 1:
+            run_time_unit = np.multiply(aux_run_time[:, 0], 3600) + \
+                            np.multiply(aux_run_time[:, 1], 60) + \
+                            aux_run_time[:, 2]
+            time_unit = '[s]'
+
+        # Dictionary with all data:
+        # [0] n_runs [1] fmin [2] best run
+        # [3] best fmin [4] seed runs [5] seed fmin
+
+        data_dict = {}
+
+        num_data = int(n_data / self.data_checkpoint)
+        data_index = np.linspace(0, n_data - 1, num=num_data, dtype=int)
+
+        fmin_aux = conv_data[0][5]
+        gen_aux = conv_data[0][2] * self.checkpoint
+        for di in data_index:
+
+            # N runs
+            n_runs.append(conv_data[di][0])
+
+            # Runs generations
+            msg_counter = conv_data[di][2] * self.checkpoint
+            runs_gen.append(msg_counter)
+
+            # Runs F min
+            runs_fmin.append(conv_data[di][3])
+
+            # Max Generations
+            max_msg_counter = conv_data[di][4] * self.checkpoint
+            max_gen.append(max_msg_counter)
+
+            # Best F min
+            fmin.append(conv_data[di][5])
+
+            # Init from rep
+            init_count.append(conv_data[di][7])
+
+            # Best Init from rep
+            best_init.append(conv_data[di][8])
+
+            # Optimiser name
+            cost_ref.append(conv_data[di][9])
+
+            # Time
+            aux = conv_data[di][10].decode('ASCII')
+            aux_b = aux.split(':')
+            aux_c = np.array(aux_b).astype(float)
+            aux_d = aux_c.reshape((1, 3))
+            run_time = np.concatenate((run_time, aux_d), axis=0)
+
+            if max_hours >= 5:
+                run_time_unit = run_time[:, 0] + \
+                                np.divide(run_time[:, 1], 60) + \
+                                np.divide(run_time[:, 2], 3600)
+
+            elif max_hours < 5:
+                run_time_unit = np.multiply(run_time[:, 0], 60) + \
+                                run_time[:, 1] + \
+                                np.divide(run_time[:, 2], 60)
+
+            elif max_hours < 1 and max_min <= 0:
+                run_time_unit = np.multiply(run_time[:, 0], 3600) + \
+                                np.multiply(run_time[:, 1], 60) + \
+                                run_time[:, 2]
+
+            # Optimiser name
+            opt_name.append(conv_data[di][11].decode('ASCII'))
+
+            # Optimiser name
+            best_name.append(conv_data[di][12].decode('ASCII'))
+
+            # Store in dictionary
+            if opt_name[di] not in data_dict:
+                data_dict[opt_name[di]] = [[], [], [], [], [], [], [], [],
+                                           []]
+
+            data_dict[opt_name[di]][0].append(runs_gen[di])
+            data_dict[opt_name[di]][1].append(runs_fmin[di])
+            data_dict[opt_name[di]][2].append(run_time_unit[di])
+            if fmin[di] <= fmin_aux:
+                gen_aux_max = max(gen_aux, runs_gen[di])
+                data_dict[opt_name[di]][3].append(gen_aux_max)
+                data_dict[opt_name[di]][4].append(fmin[di])
+                data_dict[opt_name[di]][5].append(run_time_unit[di])
+                fmin_aux = fmin[di]
+                gen_aux = runs_gen[di]
+            if init_count[di] > 0:
+                data_dict[opt_name[di]][6].append(runs_gen[di])
+                data_dict[opt_name[di]][7].append(runs_fmin[di])
+                data_dict[opt_name[di]][8].append(run_time_unit[di])
+
+        # sorting dict by key
+
+        my_keys = list(data_dict.keys())
+        my_keys.sort(reverse=False)
+        data_dict = {key: data_dict[key] for key in my_keys}
+
+        # Minimum Loss
+        min_loss_index = np.argmin(fmin)
+        min_loss = fmin[min_loss_index]
+
+        # N runs best
+        max_nruns = max(n_runs)
+        
+        # Metrics per optimiser
+        # N msgs where was the best
+        # N Gen where was the best
+        # N msgs
+        # N Gen
+        # Time active percentage
+        # Percentage of being best wrt N msgs
+        
+        # Dictionary using best names
+        
+        optim_metric_dict_best = {i: best_name.count(i) for i in best_name}
+
+        #optim_metric_dict = {i: opt_name.count(i) for i in opt_name}
+
+        fig, ax = plt.subplots(figsize=(8, 7))
+        x_pos = np.arange(len(optim_metric_dict_best))
+        i = 0
+        for key in my_keys:
+            # n_msg_best
+            optim_metric_dict_best[key] = [optim_metric_dict_best[key]]
+            
+            n_gen_best = optim_metric_dict_best[key][0] * self.checkpoint
+            optim_metric_dict_best[key].append(n_gen_best)
+            
+            n_msg = len(data_dict[key][0]) # optim_metric_dict[key]
+            optim_metric_dict_best[key].append(n_msg)
+
+            n_gen = n_msg * self.checkpoint
+            optim_metric_dict_best[key].append(n_gen)
+            
+            time_active_per = n_msg / di * 100
+            optim_metric_dict_best[key].append(time_active_per)
+
+            n_msg_best = optim_metric_dict_best[key][0]
+            time_best_per = n_msg_best / di * time_active_per
+
+            optim_metric_dict_best[key].append(time_best_per)
+            
+            # Plot
+            ax.bar(x_pos[i], optim_metric_dict_best[key][4],
+                   0.2 * self.font_factor, color=(0.1, 0.1, 0.1, 0.1),
+                   edgecolor='black', linewidth=0.8)
+            ax.bar(x_pos[i], optim_metric_dict_best[key][5], 0.2 * self.font_factor,
+               color=self.opt_colors[key], edgecolor='black', linewidth=0.8)
+            
+            i += 1
+
+        labels = my_keys
+        ax.set_ylabel('Total opt msg (%)', fontsize=16 * self.font_factor)
+        ax.set_xticks(x_pos)
+        ax.set_xticklabels(labels, rotation=90)
+        ax.tick_params(axis='both', labelsize=14 * self.font_factor)
+        ax.set_ylim([0, 25])
+
+        figname = '/Msg.' + self.fig_format
+        #plot_path = self.results_path + '/' + prob_id + \
+        #            'Comp' + str(self.n_param) + '_' + str(n_comp)
+        # path = plot_path + figname
+        path = self.rep_path + figname
+        
+        fig.savefig(path, bbox_inches='tight', format=self.fig_format,
+                    dpi=self.dpi)
+        plt.close(fig)
+
+
+
+    def optim_analysis_comp(self, conv_data_list, prob_id, n_comp, n_runs):
+
+        """
+        Plot the convergence plot (loss)
+        Args:
+            loss (ndarray): array with the convergence data
+            (0) Gen (1) Eval (2) Fmin (3) Time in hr:min:sec
+        """
+        
+        # Dictionary with avg time active and avg time best
+        global_time_active = {}
+        global_time_best = {}
+        
+        for ri in range(n_runs):
+            conv_data = conv_data_list[ri]
+            
+            # Convergence data
+            n_data = conv_data.shape[0]
+            n_runs = []
+            runs_gen = []
+            runs_fmin = []
+            max_gen = []
+            fmin = []
+            init_count = []
+            best_init = []
+            run_time = np.zeros((1, 3))
+            opt_name = []
+            best_name = []
+            cost_ref = []
+    
+            # Max Time
+            aux = conv_data[-1][10].decode('ASCII')
+            aux_b = aux.split(':')
+            aux_c = np.array(aux_b).astype(float)
+            aux_d = aux_c.reshape((1, 3))
+            aux_run_time = np.zeros((1, 3))
+            aux_run_time = np.concatenate((aux_run_time, aux_d), axis=0)
+    
+            # Time
+            max_hours = np.max(aux_run_time[:, 0])
+            max_min = np.max(aux_run_time[:, 1])
+    
+            if max_hours >= 5:
+                run_time_unit = aux_run_time[:, 0] + \
+                                np.divide(aux_run_time[:, 1], 60) + \
+                                np.divide(aux_run_time[:, 2], 3600)
+                time_unit = '[hrs]'
+    
+            elif max_hours < 5:
+                run_time_unit = np.multiply(aux_run_time[:, 0], 60) + \
+                                aux_run_time[:, 1] + \
+                                np.divide(aux_run_time[:, 2], 60)
+                time_unit = '[min]'
+    
+            elif max_hours < 1 and max_min <= 1:
+                run_time_unit = np.multiply(aux_run_time[:, 0], 3600) + \
+                                np.multiply(aux_run_time[:, 1], 60) + \
+                                aux_run_time[:, 2]
+                time_unit = '[s]'
+    
+            # Dictionary with all data:
+            # [0] n_runs [1] fmin [2] best run
+            # [3] best fmin [4] seed runs [5] seed fmin
+    
+            data_dict = {}
+    
+            num_data = int(n_data / self.data_checkpoint)
+            data_index = np.linspace(0, n_data - 1, num=num_data, dtype=int)
+    
+            fmin_aux = conv_data[0][5]
+            gen_aux = conv_data[0][2] * self.checkpoint
+            for di in data_index:
+    
+                # N runs
+                n_runs.append(conv_data[di][0])
+    
+                # Runs generations
+                msg_counter = conv_data[di][2] * self.checkpoint
+                runs_gen.append(msg_counter)
+    
+                # Runs F min
+                runs_fmin.append(conv_data[di][3])
+    
+                # Max Generations
+                max_msg_counter = conv_data[di][4] * self.checkpoint
+                max_gen.append(max_msg_counter)
+    
+                # Best F min
+                fmin.append(conv_data[di][5])
+    
+                # Init from rep
+                init_count.append(conv_data[di][7])
+    
+                # Best Init from rep
+                best_init.append(conv_data[di][8])
+    
+                # Optimiser name
+                cost_ref.append(conv_data[di][9])
+    
+                # Time
+                aux = conv_data[di][10].decode('ASCII')
+                aux_b = aux.split(':')
+                aux_c = np.array(aux_b).astype(float)
+                aux_d = aux_c.reshape((1, 3))
+                run_time = np.concatenate((run_time, aux_d), axis=0)
+    
+                if max_hours >= 5:
+                    run_time_unit = run_time[:, 0] + \
+                                    np.divide(run_time[:, 1], 60) + \
+                                    np.divide(run_time[:, 2], 3600)
+    
+                elif max_hours < 5:
+                    run_time_unit = np.multiply(run_time[:, 0], 60) + \
+                                    run_time[:, 1] + \
+                                    np.divide(run_time[:, 2], 60)
+    
+                elif max_hours < 1 and max_min <= 0:
+                    run_time_unit = np.multiply(run_time[:, 0], 3600) + \
+                                    np.multiply(run_time[:, 1], 60) + \
+                                    run_time[:, 2]
+    
+                # Optimiser name
+                opt_name.append(conv_data[di][11].decode('ASCII'))
+    
+                # Optimiser name
+                best_name.append(conv_data[di][12].decode('ASCII'))
+    
+                # Store in dictionary
+                if opt_name[di] not in data_dict:
+                    data_dict[opt_name[di]] = [[], [], [], [], [], [], [], [],
+                                               []]
+    
+                data_dict[opt_name[di]][0].append(runs_gen[di])
+                data_dict[opt_name[di]][1].append(runs_fmin[di])
+                data_dict[opt_name[di]][2].append(run_time_unit[di])
+                if fmin[di] <= fmin_aux:
+                    gen_aux_max = max(gen_aux, runs_gen[di])
+                    data_dict[opt_name[di]][3].append(gen_aux_max)
+                    data_dict[opt_name[di]][4].append(fmin[di])
+                    data_dict[opt_name[di]][5].append(run_time_unit[di])
+                    fmin_aux = fmin[di]
+                    gen_aux = runs_gen[di]
+                if init_count[di] > 0:
+                    data_dict[opt_name[di]][6].append(runs_gen[di])
+                    data_dict[opt_name[di]][7].append(runs_fmin[di])
+                    data_dict[opt_name[di]][8].append(run_time_unit[di])
+    
+            # sorting dict by key
+    
+            my_keys = list(data_dict.keys())
+            my_keys.sort(reverse=False)
+            data_dict = {key: data_dict[key] for key in my_keys}
+    
+            # Minimum Loss
+            min_loss_index = np.argmin(fmin)
+            min_loss = fmin[min_loss_index]
+    
+            # N runs best
+            max_nruns = max(n_runs)
+    
+            # Metrics per optimiser
+            # N msgs where was the best
+            # N Gen where was the best
+            # N msgs
+            # N Gen
+            # Time active percentage
+            # Percentage of being best wrt N msgs
+    
+            # Dictionary using best names
+    
+            optim_metric_dict_best = {i: best_name.count(i) for i in best_name}
+    
+            # optim_metric_dict = {i: opt_name.count(i) for i in opt_name}
+            for key in optim_metric_dict_best:
+                # n_msg_best
+                optim_metric_dict_best[key] = [optim_metric_dict_best[key]]
+    
+                n_gen_best = optim_metric_dict_best[key][0] * self.checkpoint
+                optim_metric_dict_best[key].append(n_gen_best)
+    
+                n_msg = len(data_dict[key][0])  # optim_metric_dict[key]
+                optim_metric_dict_best[key].append(n_msg)
+    
+                n_gen = n_msg * self.checkpoint
+                optim_metric_dict_best[key].append(n_gen)
+    
+                time_active_per = n_msg / di * 100
+                optim_metric_dict_best[key].append(time_active_per)
+    
+                n_msg_best = optim_metric_dict_best[key][0]
+                time_best_per = n_msg_best / di * time_active_per
+    
+                optim_metric_dict_best[key].append(time_best_per)
+                
+                # Global dictionary
+                if key not in global_time_active:
+                    global_time_active[key] = [time_active_per]
+                    global_time_best[key] = [time_best_per]
+                else:
+                    global_time_active[key].append(time_active_per)
+                    global_time_best[key].append(time_best_per)
+    
+        
+        # Compute mean and std of global dictionaries
+        global_time_active_mean = {}
+        global_time_active_std = {}
+        global_time_best_mean = {}
+        global_time_best_std = {}
+        for key in global_time_active:
+            global_time_active_mean[key] = np.mean(global_time_active[key])
+            global_time_active_std[key] = np.std(global_time_active[key])
+            global_time_best_mean[key] = np.mean(global_time_best[key])
+            global_time_best_std[key] = np.std(global_time_best[key])
+        
+        fig, ax = plt.subplots(figsize=(8, 7))
+        x_pos = np.arange(len(optim_metric_dict_best))
+        i = 0
+        for key in my_keys:
+            # Plot
+            ax.bar(x_pos[i], global_time_active_mean[key],
+                   0.2 * self.font_factor, color=(0.1, 0.1, 0.1, 0.1),
+                   edgecolor='black', linewidth=0.8)
+            ax.bar(x_pos[i], global_time_best_mean[key],
+                   0.2 * self.font_factor,
+                   color=self.opt_colors[key], edgecolor='black', linewidth=0.8)
+            ax.errorbar(x_pos[i], global_time_active_mean[key],
+                        yerr=global_time_active_std[key],
+                        color='black', fmt='o', linewidth=0.8)
+            ax.errorbar(x_pos[i], global_time_best_mean[key],
+                        yerr=global_time_best_std[key],
+                        color=self.opt_dark_colors[key],
+                        markerfacecolor=self.opt_dark_colors[key],
+                        ecolor=self.opt_dark_colors[key],
+                        fmt='o', linewidth=0.8)
+
+            i += 1
+
+        labels = my_keys
+        #ax.set_ylabel('Total opt msg (%)', fontsize=16 * self.font_factor)
+        ax.set_xticks(x_pos)
+        ax.set_xticklabels(labels, rotation=90)
+        ax.tick_params(axis='both', labelsize=14 * self.font_factor)
+        ax.set_ylim([0, 25])
+
+        figname = '/MsgMean.' + self.fig_format
+        plot_path = self.results_path + '/' + prob_id + \
+                   'Comp' + str(self.n_param) + '_' + str(n_comp)
+        path = plot_path + figname
+        
+        fig.savefig(path, bbox_inches='tight', format=self.fig_format,
+                    dpi=self.dpi)
+        plt.close(fig)
+
+        fig, ax = plt.subplots(figsize=(8, 7))
+        x_pos = np.arange(len(optim_metric_dict_best))
+        i = 0
+        for key in my_keys:
+
+            best_message_ration_mean = global_time_best_mean[key] / \
+                                    global_time_active_mean[key] * 100
+
+            best_message_ration_std = global_time_best_std[key] / \
+                                    global_time_active_std[key] * 100
+
+            # Plot
+            ax.bar(x_pos[i], best_message_ration_mean,
+                   0.2 * self.font_factor,
+                   color=self.opt_colors[key], edgecolor='black',
+                   linewidth=0.8)
+            # ax.errorbar(x_pos[i], best_message_ration_mean,
+            #             yerr=best_message_ration_std,
+            #             color=self.opt_dark_colors[key],
+            #             markerfacecolor=self.opt_dark_colors[key],
+            #             ecolor=self.opt_dark_colors[key],
+            #             fmt='o', linewidth=0.8)
+
+            i += 1
+
+        labels = my_keys
+        ax.set_ylabel('Best opt msg (%)', fontsize=16 * self.font_factor)
+        ax.set_xticks(x_pos)
+        ax.set_xticklabels(labels, rotation=90)
+        ax.tick_params(axis='both', labelsize=14 * self.font_factor)
+        ax.set_ylim([0, 100])
+
+        figname = '/MsgMeanRatio.' + self.fig_format
+        plot_path = self.results_path + '/' + prob_id + \
+                    'Comp' + str(self.n_param) + '_' + str(n_comp)
+        path = plot_path + figname
+
+        fig.savefig(path, bbox_inches='tight', format=self.fig_format,
+                    dpi=self.dpi)
+        plt.close(fig)

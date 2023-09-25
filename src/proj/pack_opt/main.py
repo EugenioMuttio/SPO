@@ -46,7 +46,7 @@ from plib.plots import Plots
 
 # Objective Functions:
 
-# - Path Finding Optimisation
+# - Packing Optimisation
 
 # Optimisation Algorithms:
 
@@ -120,6 +120,12 @@ if args.report == 0:
     # 'LHS' - Latin Hypercube
     # 'RU' - Random Uniform
     init.func = 'RU'
+
+    # Pack Opt --------------------------------
+    # lower limit
+    init.param_range[0, :] = args.lower_limit
+    # upper limit
+    init.param_range[1, :] = args.upper_limit
 
     # ------------------------- Optimiser ------------------------ #
     optim = Wrapper(args, init, proj, files_man, seed)

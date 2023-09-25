@@ -67,16 +67,16 @@ class SOPowerBench(object):
         # Objective Function
         # x are coordinates arrangeed as:
         # [x_1, y_1, x_2, y_2, ..., x_n, y_n]
-        f = 0
-        for i in range(self.n_param):
-            f -= self.wind_fitness(interval_num, interval, fre, N, x, a,
-                                   kappa, R, k, c, cut_in_speed, rated_speed,
-                                   cut_out_speed)
+
+        f = -self.wind_fitness(interval_num, interval, fre, N, x, a,
+                               kappa, R, k, c, cut_in_speed, rated_speed,
+                               cut_out_speed)
 
         # Inequality Constraints
         n_coord = int(self.n_param / 2)
         XX = np.zeros(n_coord)
         YY = np.zeros(n_coord)
+
         for i in range(n_coord):
             XX[i] = x[2 * i]
             YY[i] = x[2 * i + 1]
@@ -84,8 +84,7 @@ class SOPowerBench(object):
         ki = 0
         g_i = []
         for i in range(n_coord):
-            for j in range(i + 1, n_coord):
-
+            for j in range(i + 1, n_coord - 1):
                 aux = 5 * R - np.sqrt((XX[i] - XX[j]) ** 2 + (YY[i] - YY[j]) ** 2)
                 g_i.append(aux)
                 ki += 1
@@ -93,7 +92,7 @@ class SOPowerBench(object):
         g_i = np.array(g_i)
 
         # Objective evaluation
-        k_1 = np.ones(g_i.shape) * 1e6
+        k_1 = np.ones(g_i.shape)
 
         g_i_p = 0
         for i in range(g_i.shape[0]):
@@ -134,9 +133,9 @@ class SOPowerBench(object):
         power_eva = 0.0
 
         for i in range(N):
-            for j in range(1, n_ws + 1):
-                v_j_1 = cut_in_speed + (j-1) * 0.3
-                v_j = cut_out_speed + j * 0.3
+            for j in range(n_ws):
+                v_j_1 = cut_in_speed + (j) * 0.3
+                v_j = cut_in_speed + j * 0.3
                 power_eva += 1500 * np.exp((v_j_1 + v_j) / 2 -7.5) / \
                              (5 + np.exp((v_j_1 + v_j) / 2 - 7.5)) * \
                              (np.exp(-(v_j_1 / (interval_c[i]**k))) -
@@ -155,7 +154,7 @@ class SOPowerBench(object):
             for j in range(N):
                 affected, dij = self.downstream_wind_turbine_is_affected(coordinate, j, i, theta, kappa, R)
                 if affected:
-                    def_i = a / (1 + kappa * dij / R) ** 2
+                    def_i = a / ((1 + kappa * dij / R) ** 2)
                     vel_def_i += def_i ** 2
             vel_def[i] = np.sqrt(vel_def_i)
 
@@ -177,3 +176,58 @@ class SOPowerBench(object):
             affected = True
 
         return affected, dij
+
+    def sopwm_3(self, x):
+        """
+        RC45: SOPWM for 3-level inverter
+        Synchronous Optimal Pulse-Width Modulation (SOPWM) is a rising
+        approach to regulate Medium-Voltage (MV) drives. It provides a signif-
+        icant reduction of switching frequency without raising the distortion.
+        Consequently, it reduces the switching losses which enhances the per-
+        formance of the inverter. Over a single fundamental period, switching
+        angles are calculated while reducing the distortion of current. SOPWM
+        can be cast as a scalable COP. For diﬀerent level inverters, the SOPWM
+        problem can be stated in the following way.
+
+            Args:
+                x: Design variable with bounds [0, 1]
+                self: Object containing related parameters
+
+            Returns:
+                obj: Weighted summation of function and constraint values
+        """
+
+        # parameters
+        m = 0.32
+        s = (-1 * np.ones(self.n_param)) ** [i for i in range(self.n_param)]
+        k = [5, 7, 11, 13, 17, 19, 23, 25, 29, 31, 35, 37, 41, 43, 47, 49, 53,
+             55, 59, 61, 65, 67, 71, 73, 77, 79, 83, 85, 91, 95, 97]
+        k = np.array(k)
+        # Objective Function
+        su = 0
+        for j in range(30):
+            su2 = 0
+            for l in range(self.n_param):
+                su2 += s[l] * np.cos(k[j] * x[l] * np.pi/180)
+            su += su2 ** 2 / (k[j] ** 4)
+        f = su ** 0.5 / (np.sum(1 / k ** 2) ** 0.5)
+
+        # Inequality and Equality Constraints
+
+        # Penalty factors
+        k_1 = 1e2 # Inequality
+        k_2 = 1e2 # Equality
+
+        g = 0
+        h = 0
+        for i in range(self.n_param):
+            g_i = x[i] - x[i+1] + 1e-6
+            g += k_1 * (max(0, g_i)) ** 2
+
+            h_i = s[i] * np.cos(x[i] * np.pi / 180) - m
+            h += k_2 * (h_i) ** 2
+
+        # Objective evaluation
+        obj = f + g + h
+
+        return obj

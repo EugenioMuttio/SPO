@@ -58,7 +58,7 @@ if [ "$report" -eq 0 ]; then
 else
   # ---- Run to Report ---- #
   python3 main.py --report $report \
-  --n_param $n_param --lower_limit $lower_limit --upper_limit $upper_limit \
+  --n_param $n_param --lower_limit_1 $lower_limit_1 --upper_limit_1 $upper_limit_1 \
   --checkpoint $checkpoint --max_pop_from_rep $max_pop_from_rep --n_rep $n_rep \
   --init_prob $init_prob --kill_flag $kill_flag --p_n $p_n --n_0 $n_0 \
   --n_best_runs $n_best_runs --stall_tol $stall_tol --n_stall $n_stall  \

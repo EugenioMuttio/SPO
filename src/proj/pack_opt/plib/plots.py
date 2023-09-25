@@ -51,9 +51,9 @@ class Plots(object):
                        'black': np.array([33, 37, 41]) / 255,
                        'grey': np.array([222, 226, 230]) / 255}
 
-        self.opt_colors = {'MCS': np.array([208, 0, 0]) / 255,
+        self.opt_colors = {'MCSV2': np.array([208, 0, 0]) / 255,
                            'MCSV1': np.array([157, 2, 8]) / 255,
-                           'MCSV2': np.array([106, 4, 15]) / 255,
+                           'MCS': np.array([106, 4, 15]) / 255,
                            'PymooPSO': np.array([0, 95, 115]) / 255,
                            'PymooPSOV1': np.array([10, 147, 150]) / 255,
                            'PymooPSOV2': np.array([148, 210, 189]) / 255,
@@ -494,13 +494,13 @@ class Plots(object):
                             np.divide(aux_run_time[:, 2], 3600)
             time_unit = '[hrs]'
 
-        elif max_hours < 5 and max_min > 5:
+        elif max_hours < 5 and max_min < 1:
             run_time_unit = np.multiply(aux_run_time[:, 0], 60) + \
                             aux_run_time[:, 1] + \
                             np.divide(aux_run_time[:, 2], 60)
             time_unit = '[min]'
 
-        elif max_hours < 1 and max_min <= 5:
+        elif max_hours < 1 and max_min <= 1:
             run_time_unit = np.multiply(aux_run_time[:, 0], 3600) + \
                             np.multiply(aux_run_time[:, 1], 60) + \
                             aux_run_time[:, 2]
@@ -557,7 +557,7 @@ class Plots(object):
                                 np.divide(run_time[:, 1], 60) + \
                                 np.divide(run_time[:, 2], 3600)
 
-            elif max_hours < 5 and max_min > 5:
+            elif max_hours < 5 and max_min >= 0 :
                 run_time_unit = np.multiply(run_time[:, 0], 60) + \
                                 run_time[:, 1] + \
                                 np.divide(run_time[:, 2], 60)
@@ -995,6 +995,11 @@ class Plots(object):
                 data_dict[opt_name[di]][6].append(runs_gen[di])
                 data_dict[opt_name[di]][7].append(runs_fmin[di])
 
+        # sorting dict by key
+
+        my_keys = list(data_dict.keys())
+        my_keys.sort(reverse=False)
+        data_dict = {key: data_dict[key] for key in my_keys}
 
         # Best run
         best_run = int(conv_data[-1][6])
@@ -1171,7 +1176,7 @@ class Plots(object):
                          prop={"size": 10 * self.font_factor},
                          ncol=1,
                          frameon=False, loc='upper right',
-                         bbox_to_anchor=(1.35, 0.99))
+                         bbox_to_anchor=(1.45, 0.99))
 
         figname = 'ConvZoom.' + self.fig_format
         path = self.rep_path + figname
@@ -1193,14 +1198,14 @@ class Plots(object):
                 #            markerfacecolor=opt_colors[runs_data[ri][4]],
                 #            color=opt_colors["Best"], markersize=5)
 
-                ax.semilogy(runs_data[ri][1], runs_data[ri][2], "o",
+                ax.plot(runs_data[ri][1], runs_data[ri][2], "o",
                             color=self.opt_colors[runs_data[ri][4]], markersize=5)
 
-                ax.semilogy(runs_data[ri][1], runs_data[ri][2], ".",
+                ax.plot(runs_data[ri][1], runs_data[ri][2], ".",
                             color=self.opt_colors["Best"], markersize=2)
             else:
 
-                ax.semilogy(runs_data[ri][1], runs_data[ri][2], "o",
+                ax.plot(runs_data[ri][1], runs_data[ri][2], "o",
                             color=self.opt_colors[runs_data[ri][4]], markersize=5)
 
         fmin_aux = fmin[0]
@@ -1215,14 +1220,14 @@ class Plots(object):
                     #          markerfacecolor=opt_colors[best_name[di]],
                     #          markeredgewidth=1.5, markersize=7.5)
 
-                    ax.semilogy(gen_aux_max, fmin[di], '^',
+                    ax.plot(gen_aux_max, fmin[di], '^',
                               color=self.opt_colors[best_name[di]],
                               markersize=7.5)
 
-                    ax.semilogy(gen_aux_max, fmin[di], ".",
+                    ax.plot(gen_aux_max, fmin[di], ".",
                               color=self.opt_colors["Best"], markersize=2)
                 else:
-                    ax.semilogy(gen_aux_max, fmin[di], '^',
+                    ax.plot(gen_aux_max, fmin[di], '^',
                               color=self.opt_colors[best_name[di]],
                               markersize=7.5)
 
@@ -1231,11 +1236,12 @@ class Plots(object):
 
         # Reference level
         for ri in range(len(ref_level)):
-            ax.semilogy([0, max_runs_gen],
+            ax.plot([0, max_runs_gen],
                         [ref_level[ri], ref_level[ri]],
                         linestyle=(0, (5, 10)),
                         color=self.opt_colors["Best"], linewidth=2)
 
+        ax.set_yscale('log')
         ax.grid()
         plt.ylim(self.yl1, self.yl2)
 
@@ -1248,9 +1254,9 @@ class Plots(object):
                          fancybox=False, prop={"size": 10 * self.font_factor},
                          ncol=1,
                          frameon=False, loc='upper right',
-                         bbox_to_anchor=(1.35, 0.99))
+                         bbox_to_anchor=(1.45, 0.99))
 
-        figname = 'ConvTimelog.' + self.fig_format
+        figname = 'Convlog.' + self.fig_format
         path = self.rep_path + figname
         fig.savefig(path, bbox_extra_artists=(lgd,),
                     bbox_inches='tight', format=self.fig_format, dpi=self.dpi)
@@ -1269,14 +1275,14 @@ class Plots(object):
                 #            markerfacecolor=opt_colors[runs_data[ri][4]],
                 #            color=opt_colors["Best"], markersize=5)
 
-                ax.loglog(runs_data[ri][1], runs_data[ri][2], "o",
+                ax.plot(runs_data[ri][1], runs_data[ri][2], "o",
                             color=self.opt_colors[runs_data[ri][4]], markersize=5)
 
-                ax.loglog(runs_data[ri][1], runs_data[ri][2], ".",
+                ax.plot(runs_data[ri][1], runs_data[ri][2], ".",
                             color=self.opt_colors["Best"], markersize=2)
             else:
 
-                ax.loglog(runs_data[ri][1], runs_data[ri][2], "o",
+                ax.plot(runs_data[ri][1], runs_data[ri][2], "o",
                             color=self.opt_colors[runs_data[ri][4]], markersize=5)
 
         fmin_aux = fmin[0]
@@ -1291,14 +1297,14 @@ class Plots(object):
                     #            markerfacecolor=opt_colors[best_name[di]],
                     #            markeredgewidth=1.5, markersize=7.5)
 
-                    ax.loglog(gen_aux_max, fmin[di], '^',
+                    ax.plot(gen_aux_max, fmin[di], '^',
                               color=self.opt_colors[best_name[di]],
                               markersize=7.5)
 
-                    ax.loglog(gen_aux_max, fmin[di], ".",
+                    ax.plot(gen_aux_max, fmin[di], ".",
                                 color=self.opt_colors["Best"], markersize=2)
                 else:
-                    ax.loglog(gen_aux_max, fmin[di], '^',
+                    ax.plot(gen_aux_max, fmin[di], '^',
                                 color=self.opt_colors[best_name[di]],
                                 markersize=7.5)
 
@@ -1307,12 +1313,14 @@ class Plots(object):
 
         # Reference level
         for ri in range(len(ref_level)):
-            ax.loglog([0, max_runs_gen],
+            ax.plot([0, max_runs_gen],
                       [ref_level[ri], ref_level[ri]],
                       linestyle=(0, (5, 10)),
                       color=self.opt_colors["Best"], linewidth=2)
 
         plt.ylim(self.yl1, self.yl2)
+        ax.set_yscale('log')
+        ax.set_xscale('log')
         ax.grid()
         ax.get_yaxis().set_major_formatter(
             matplotlib.ticker.LogFormatterSciNotation())
@@ -1321,7 +1329,7 @@ class Plots(object):
         ax.get_xaxis().set_major_formatter(
             matplotlib.ticker.LogFormatterSciNotation())
 
-        ax.tick_params(axis='both', labelsize=14 * self.font_factor)
+        ax.tick_params(axis='both', labelsize=12 * self.font_factor)
 
         fig.tight_layout()
 
@@ -1329,7 +1337,7 @@ class Plots(object):
                          fancybox=False, prop={"size": 10 * self.font_factor},
                          ncol=1,
                          frameon=False, loc='upper right',
-                         bbox_to_anchor=(1.35, 0.99))
+                         bbox_to_anchor=(1.45, 0.99))
 
         figname = 'Convloglog.' + self.fig_format
         path = self.rep_path + figname
@@ -1358,14 +1366,14 @@ class Plots(object):
 
         ax.grid()
 
-        ax.tick_params(axis='both', labelsize=14 * self.font_factor)
+        ax.tick_params(axis='both', labelsize=12 * self.font_factor)
 
         fig.tight_layout()
 
         lgd = plt.legend(handles=handles, labels=labels,
                          fancybox=False, prop={"size": 12}, ncol=1,
                          frameon=False, loc='upper right',
-                         bbox_to_anchor=(1.35, 0.99))
+                         bbox_to_anchor=(1.45, 0.99))
 
         figname = 'InitLoss.' + self.fig_format
         path = self.rep_path + figname
@@ -1453,7 +1461,7 @@ class Plots(object):
 
         fig.tight_layout()
 
-        handles[0] = plt.plot([], '-^', color=self.opt_colors[best_name[-1]],
+        handles[0] = plt.plot([], '^', color=self.opt_colors[best_name[-1]],
                               markersize=7.5)[0]
 
         if best_init[-1] > 0:
@@ -1465,7 +1473,7 @@ class Plots(object):
                          fancybox=False, prop={"size": 10 * self.font_factor},
                          ncol=1,
                          frameon=False, loc='upper right',
-                         bbox_to_anchor=(1.35, 0.99))
+                         bbox_to_anchor=(1.45, 0.99))
 
         figname = 'ConvTimeZoom.' + self.fig_format
         path = self.rep_path + figname
@@ -1487,17 +1495,17 @@ class Plots(object):
                 #            markerfacecolor=opt_colors[runs_data[ri][4]],
                 #            color=opt_colors["Best"], markersize=5)
 
-                ax.semilogy(runs_data[ri][3], runs_data[ri][2], "o",
+                ax.plot(runs_data[ri][3], runs_data[ri][2], "o",
                             color=self.opt_colors[runs_data[ri][4]], markersize=5)
 
-                ax.semilogy(runs_data[ri][3], runs_data[ri][2], ".",
+                ax.plot(runs_data[ri][3], runs_data[ri][2], ".",
                             color=self.opt_colors["Best"], markersize=2)
             else:
 
-                ax.semilogy(runs_data[ri][3], runs_data[ri][2], "o",
+                ax.plot(runs_data[ri][3], runs_data[ri][2], "o",
                             color=self.opt_colors[runs_data[ri][4]], markersize=5)
 
-            ax.semilogy(runs_data[ri][3], runs_data[ri][6], "_",
+            ax.plot(runs_data[ri][3], runs_data[ri][6], "_",
                         color=self.opt_colors["Best"], markersize=8)
 
         fmin_aux = fmin[0]
@@ -1513,24 +1521,24 @@ class Plots(object):
                     #            markerfacecolor=opt_colors[best_name[di]],
                     #            markeredgewidth=1.5, markersize=7.5)
 
-                    ax.semilogy(run_time_unit[di], fmin[di],
+                    ax.plot(run_time_unit[di], fmin[di],
                                 '^',
                                 color=self.opt_colors[best_name[di]],
                                 markersize=7.5)
 
-                    ax.semilogy(run_time_unit[di], fmin[di], ".",
+                    ax.plot(run_time_unit[di], fmin[di], ".",
                                 color=self.opt_colors["Best"], markersize=2)
 
                 else:
 
-                    ax.semilogy([run_time_unit_aux,
+                    ax.plot([run_time_unit_aux,
                                  run_time_unit[di]],
                                 [fmin_aux, fmin[di]],
                                 '-',
                                 color=self.opt_colors['Best'],
                                 linewidth=2)
 
-                    ax.semilogy(run_time_unit[di], fmin[di],
+                    ax.plot(run_time_unit[di], fmin[di],
                                 '^',
                                 color=self.opt_colors[best_name[di]],
                                 markersize=7.5)
@@ -1545,15 +1553,16 @@ class Plots(object):
                         linestyle=(0, (5, 10)),
                         color=self.opt_colors["Best"], linewidth=1)
 
+        ax.set_yscale('log')
         ax.grid()
 
-        ax.tick_params(axis='both', labelsize=14 * self.font_factor)
+        ax.tick_params(axis='both', labelsize=12 * self.font_factor)
 
         plt.ylim(self.yl1, self.yl2)
 
         fig.tight_layout()
 
-        handles[0] = plt.plot([], '-^', color=self.opt_colors[best_name[-1]],
+        handles[0] = plt.plot([], '^', color=self.opt_colors[best_name[-1]],
                               markersize=7.5)[0]
 
         if best_init[-1] > 0:
@@ -1565,7 +1574,7 @@ class Plots(object):
                          fancybox=False, prop={"size": 10 * self.font_factor},
                          ncol=1,
                          frameon=False, loc='upper right',
-                         bbox_to_anchor=(1.35, 0.99))
+                         bbox_to_anchor=(1.45, 0.99))
 
         figname = 'ConvTime.' + self.fig_format
         path = self.rep_path + figname
@@ -1607,10 +1616,10 @@ class Plots(object):
         for i in range(len(xobs)):
             circle = plt.Circle((xobs[i], yobs[i]), robs[i],
                                 facecolor='k', edgecolor='w')
-            matplotlib.pyplot.text(xobs[i], yobs[i], s=str(i + 1),
-                                   horizontalalignment='center',
-                                   verticalalignment='center',
-                                   color='w')
+            # matplotlib.pyplot.text(xobs[i], yobs[i], s=str(i + 1),
+            #                        horizontalalignment='center',
+            #                        verticalalignment='center',
+            #                        color='w')
             ax.add_patch(circle)
 
         plt.xlim(self.lower_limit, self.upper_limit)

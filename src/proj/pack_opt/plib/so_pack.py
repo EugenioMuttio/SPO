@@ -22,6 +22,7 @@ class SOPackOpt(object):
 
         self.robs = np.concatenate((self.robs, self.robs)) # 100
         self.robs = np.concatenate((self.robs, self.robs)) # 200
+        self.robs = np.concatenate((self.robs, self.robs))  # 400
 
         #self.robs = np.ones(200)
 

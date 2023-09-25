@@ -332,6 +332,8 @@ class MCSV2(object):
 
             filename = self.run_path + '/' + 'conv.dat'
             conv_file = open(filename, "a")
+            conv_file.write(str(self.name))
+            conv_file.write("\t")
             conv_file.write(str(self.igen))
             conv_file.write("\t")
             conv_file.write(str(self.num_eval))

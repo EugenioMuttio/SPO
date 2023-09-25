@@ -26,4 +26,20 @@ def init_proj_args():
                         type=float, metavar='N',
                         help='parameters limit (default: -15)')
 
+    parser.add_argument('--upper_limit_3', default=15,
+                        type=float, metavar='N',
+                        help='parameters limit (default: 15)')
+
+    parser.add_argument('--lower_limit_3', default=-15,
+                        type=float, metavar='N',
+                        help='parameters limit (default: -15)')
+
+    parser.add_argument('--upper_limit_4', default=15,
+                        type=float, metavar='N',
+                        help='parameters limit (default: 15)')
+
+    parser.add_argument('--lower_limit_4', default=-15,
+                        type=float, metavar='N',
+                        help='parameters limit (default: -15)')
+
     return parser

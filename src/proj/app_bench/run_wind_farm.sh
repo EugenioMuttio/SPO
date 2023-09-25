@@ -9,7 +9,7 @@ upper_limit_1=$(echo "1960.0")
 
 # ---- Optimiser - General ---- #
 # Number of Gen to save state / Communications
-checkpoint=1
+checkpoint=10
 
 # ---- Repository ---- #
 # [0,1] max porcentage of population from rep
@@ -25,11 +25,11 @@ kill_flag=True
 # Parameter to define number of generations allowed
 p_n=3
 # Max number of checkpoints reached without improving fmin
-n_0=2
+n_0=3
 # Number of best runs allowed to run max generations
 n_best_runs=2
 # Stall tolerance level (0, 1) - closer to one more exploration
-stall_tol=$(echo "0.001")
+stall_tol=$(echo "0.01")
 # Number of stall error for each optim - higher number more exploration
 n_stall=4
 # Max number of runs
@@ -40,7 +40,7 @@ exp_id=$2
 
 # ---- MPI ---- #
 # Number of devices: n_workers + 1 (supervisor)
-n_devices=5
+n_devices=6
 
 # ---- Report ---- #
 # Report flag (0: optimise, 1: report)

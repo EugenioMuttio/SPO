@@ -33,6 +33,7 @@ from lib.other.tools import Timer
 # Project Library
 from plib.so_mech_bench import SOMechBench
 from plib.so_power_bench import SOPowerBench
+from plib.so_chem_bench import SOChemBench
 from plib.report import Report
 from plib.proj_args_file import init_proj_args
 
@@ -45,6 +46,9 @@ from plib.proj_args_file import init_proj_args
 # - Single-Objective Optimisation Only
 
 # Objective Functions:
+
+# Chemical Benchmark Problems:
+# - Propane, isobutane, n-butane nonsharp separation
 
 # Mechanical Benchmark Problems:
 # - Three Bars
@@ -79,19 +83,21 @@ proj_parser = init_proj_args()
 # Combine parser arguments
 args = proj_parser.parse_args(extras_optim, namespace=args_optim)
 
+
 # ---------------------------- Project ----------------------------- #
 
 # Project object
+#proj = SOChemBench(args)
 proj = SOMechBench(args)
 
 # Select function to optimise
-proj.optim_func = proj.three_bars
+proj.optim_func = proj.himmelblau
 
 # ------------------------ Files Management ------------------------ #
 
 if args.run_id == 'A':
 
-    prob_id = 'app_bench/three_bars/'
+    prob_id = 'app_bench/himmelblau/'
     args.run_id = prob_id + 'Run' + str(args.n_param) + '_' + str(args.exp_id)
 
 files_man = FilesMan(args)
@@ -132,9 +138,9 @@ if args.report == 0:
 
     # Three bars --------------------------------
     # lower limit
-    init.param_range[0, :] = args.lower_limit_1
-    # upper limit
-    init.param_range[1, :] = args.upper_limit_1
+    # init.param_range[0, :] = args.lower_limit_1
+    # # upper limit
+    # init.param_range[1, :] = args.upper_limit_1
 
     # Vessel design -----------------------------
     # lower limit
@@ -146,17 +152,81 @@ if args.report == 0:
 
     # Thrust design -----------------------------
     # lower limit
-    # init.param_range[0, :3] = args.lower_limit_1
-    # init.param_range[0, 3:] = args.lower_limit_2
-    # # upper limit
-    # init.param_range[1, :3] = args.upper_limit_1
-    # init.param_range[1, 3:] = args.upper_limit_2
+    # init.param_range[0, :] = args.lower_limit_1
+    # init.param_range[0, 3] = args.lower_limit_2
+    # # # upper limit
+    # init.param_range[1, :] = args.upper_limit_1
+    # init.param_range[1, 3] = args.upper_limit_2
+
+    # Himmelblau's function ---------------------
+    # lower limit
+    init.param_range[0, 0] = 78
+    init.param_range[0, 1] = 33
+    init.param_range[0, [2, 3, 4]] = 27
+    # upper limit
+    init.param_range[1, 0] = 102
+    init.param_range[1, [1, 2, 3, 4]] = 45
 
     # Wind Farm -----------------------------
+    # lower limit
+    # init.param_range[0, :] = args.lower_limit_1
+    # # upper limit
+    # init.param_range[1, :] = args.upper_limit_1
+
+    # SOPWM --------------------------------
     # # lower limit
     # init.param_range[0, :] = args.lower_limit_1
     # # upper limit
     # init.param_range[1, :] = args.upper_limit_1
+
+    # Nonsharp Separation ------------------------
+    # args.lower_limit_1 = 0.0
+    # args.upper_limit_1 = 150.0
+    # args.lower_limit_2 = 0.0
+    # args.upper_limit_2 = 30.0
+    # args.lower_limit_3 = 0.0
+    # args.upper_limit_3 = 1.0
+    # args.lower_limit_4 = 0.85
+    # args.upper_limit_4 = 1.0
+    # # lower limit
+    # init.param_range[0, :] = 0.0
+    # init.param_range[0, 0:20] = args.lower_limit_1
+    # init.param_range[0, [24, 26, 31, 34, 36, 28]] = args.lower_limit_2
+    # init.param_range[0, [20, 21, 22, 29, 32, 33, 35, 37, 38, 39, 41, 42, 43, 44, 45, 46, 47]] = args.lower_limit_3
+    # init.param_range[0, [23, 25, 27, 30]] = args.lower_limit_4
+    # # upper limit
+    # init.param_range[1, :] = 1.0
+    # init.param_range[1, 0:20] = args.upper_limit_1
+    # init.param_range[1, [24, 26, 31, 34, 36, 28]] = args.upper_limit_2
+    # init.param_range[1, [20, 21, 22, 29, 32, 33, 35, 37, 38, 39, 41, 42, 43, 44, 45, 46, 47]] = args.upper_limit_3
+    # init.param_range[1, [23, 25, 27, 30]] = args.upper_limit_4
+
+    # Heat exchanger network design (Case 1) ------------------------
+    # lower limit
+    # init.param_range[0, [0, 1, 2, 3, 5]] = 0
+    # init.param_range[0, 4] = 1000
+    # init.param_range[0, [6, 7, 8]] = 100
+    # # upper limit
+    # init.param_range[1, 0] = 10
+    # init.param_range[1, [1, 3]] = 200
+    # init.param_range[1, 2] = 100
+    # init.param_range[1, 4] = 2000000
+    # init.param_range[1, [5, 6, 7]] = 600
+    # init.param_range[1, 8] = 900
+
+    # Heat exchanger network design (Case 2) ------------------------
+    # lower limit
+    # init.param_range[0, [0, 1, 2]] = 1e4
+    # init.param_range[0, [3, 4, 5]] = 0
+    # init.param_range[0, [6, 7, 8, 9, 10]] = 100
+    # # upper limit
+    # init.param_range[1, 0] = 81.9e4
+    # init.param_range[1, 1] = 113.1e4
+    # init.param_range[1, 2] = 205e4
+    # init.param_range[1, [3, 4, 5]] = 5.074e-2
+    # init.param_range[1, 6] = 200
+    # init.param_range[1, [7, 8, 9]] = 300
+    # init.param_range[1, 10] = 400
 
     # ------------------------- Optimiser ------------------------ #
     optim = Wrapper(args, init, proj, files_man, seed)
@@ -164,9 +234,10 @@ if args.report == 0:
     # Define optimisers in a list
 
     optim.optim_list = [MCS, MCSV1, MCSV2,
-                        PymooGA,
-                        PymooPSO, PymooPSOV1, PymooPSOV2,
+                        PymooGA, PymooPSO, PymooPSOV1, PymooPSOV2,
                         PymooCMAES, PymooDE]
+
+    # optim = MCS(args, init, proj, files_man, seed)
 
     # Run optimiser
     optim.run()
@@ -191,14 +262,14 @@ elif args.report == 1:
     # Statistical information to give to comparison plots ----------------
     # opt_flag = True: standalone optimiser comparison
     # opt_flag = False: Wrapper comparison
-    # run_name = 'PSO200'
-    # n_runs = 10
-    # rep.report_avg(run_name, prob_id, n_runs, opt_flag=True, n_workers=15)
+    run_name = 'Run5'
+    n_runs = 5
+    #rep.report_avg(run_name, prob_id, n_runs, opt_flag=False, n_workers=10)
 
 
     # Comparison Plots ---------------------------------------------------
     # Subfolder name
-    # n_comp = 10
+    n_comp = 10
     # # Runs to compare
     # runs_file = ['PSO200_5', 'GA200_7', 'CMAES200_1','MCS200_1','DE200_1']
     # # Best run id inside each folder of runs_file
@@ -216,6 +287,8 @@ elif args.report == 1:
     #                       avg_fmin, std_dev, n_comp)
 
 
+    # Optimisers Analysis ---------------------------------------------------
+    rep.report_optim_analysis(run_name, prob_id, n_runs, n_comp)
 
 
 

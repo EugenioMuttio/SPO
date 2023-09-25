@@ -2,7 +2,7 @@
 
 # ---- Problem Definition ---- #
 # Number of parameters
-n_param=400
+n_param=800
 # Parameter limits
 lower_limit=$(echo "-200.0")
 upper_limit=$(echo "200.0")

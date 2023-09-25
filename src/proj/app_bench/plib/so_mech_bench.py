@@ -63,11 +63,9 @@ class SOMechBench(object):
         g_3 = P / (np.sqrt(2) * x[1] + x[0]) - sigma
 
         # Objective evaluation
-        k_1 = 1e6
-        k_2 = 1e6
-        k_3 = 1e6
+        k_1 = 1_000_000
 
-        obj = f + k_1 * (max(0, g_1)) ** 2 + k_2 * (max(0, g_2)) ** 2 + k_3 * (max(0, g_3)) ** 2
+        obj = f + k_1 * ((max(0, g_1)) ** 2 + (max(0, g_2)) ** 2 + (max(0, g_3)) ** 2)
 
         return obj
 
@@ -115,10 +113,10 @@ class SOMechBench(object):
         g_4 = -np.pi * x_3 ** 2 * x_4 - 4 / 3 * np.pi * x_3 ** 3 + 1296000
 
         # Objective evaluation
-        k_1 = 1e6
-        k_2 = 1e6
-        k_3 = 1e6
-        k_4 = 1e6
+        k_1 = 1e5
+        k_2 = 1e5
+        k_3 = 1e5
+        k_4 = 1e5
 
         obj = f + k_1 * (max(0, g_1)) ** 2 + k_2 * (max(0, g_2)) ** 2 \
               + k_3 * (max(0, g_3)) ** 2 + k_4 * (max(0, g_4)) ** 2
@@ -150,17 +148,27 @@ class SOMechBench(object):
         R_0 = x[1]
         Q = x[2]
         mu = x[3]
+        gamma = 0.0307
+        C = 0.5
+        n = -3.55
+        C1 = 10.04
+        Ws = 101000
+        Pmax = 1000
+        delTmax = 50
+        hmin = 0.001
+        gg = 386.4
+        N = 750
 
         #P = (np.log10(np.log10(8.122 * 1e6 * mu + 0.8)) + 3.55) / 10.04
-        P = (np.log10(np.log10(8.122 * 1e6 * mu + 0.8)) - 10.04) / -3.55
+        P = (np.log10(np.log10(8.122 * 1e6 * mu + 0.8)) - C1) / n
         DT = 2 * (10 ** P - 560)
-        E_f = 9336 * Q * 0.0307 * 0.5 * DT
-        h = (2 * np.pi * 750 / 60) ** 2 * 2 * np.pi * mu / E_f * ((R ** 4) / 4 - (R_0 ** 4) / 4) - 1e-5
-        P_0 = 6 * mu * Q / (np.pi * h ** 3) * np.log(R / R_0)
+        E_f = 9336 * Q * gamma * C * DT
+        h = (2 * np.pi * N / 60) ** 2 * 2 * np.pi * mu / E_f * ((R ** 4) / 4 - (R_0 ** 4) / 4) - 1e-5
+        P_0 = (6 * mu * Q / (np.pi * h ** 3)) * np.log(R / R_0)
         W = np.pi * P_0 * 0.5 * (R ** 2 - R_0 ** 2) / (np.log(R / R_0) - 1e-5)
 
         # Objective Function
-        f = (Q * P_0 / 0.7 + E_f)/12
+        f = (Q * P_0 / 0.7 + E_f)
 
         # Inequality Constraints
         # g_1 = 1000 - P_0
@@ -171,26 +179,66 @@ class SOMechBench(object):
         # g_6 = R - R_0
         # g_7 = h - 0.001
 
-        g_1 = 101000 - W
-        g_2 = P_0 - 1000
-        g_3 = DT - 50
-        g_4 = 0.001 - h
+        g_1 = Ws - W
+        g_2 = P_0 - Pmax
+        g_3 = DT - delTmax
+        g_4 = hmin - h
         g_5 = R_0 - R
-        g_6 = 0.0307 / (386.4 * P_0) * (Q / (2 * np.pi * R * h)) - 0.001
+        g_6 = gamma / (gg * P_0) * (Q / (2 * np.pi * R * h)) - 0.001
         g_7 = W / (np.pi * (R ** 2 - R_0 ** 2) + 1e-5) - 5000
 
         # Objective evaluation
-        k_1 = 1e1
-        k_2 = 1e1
-        k_3 = 1e1
-        k_4 = 1e1
-        k_5 = 1e1
-        k_6 = 1e1
-        k_7 = 1e1
+        k_1 = 1e8
 
-        obj = f + k_1 * (max(0, g_1)) ** 2 + k_2 * (max(0, g_2)) ** 2 \
-              + k_3 * (max(0, g_3)) ** 2 + k_4 * (max(0, g_4)) ** 2 \
-              + k_5 * (max(0, g_5)) ** 2 + k_6 * (max(0, g_6)) ** 2 \
-              + k_7 * (max(0, g_7)) ** 2
+        obj = f + k_1 * ((max(0, g_1)) ** 2 + (max(0, g_2)) ** 2 \
+              + (max(0, g_3)) ** 2 + (max(0, g_4)) ** 2 \
+              + (max(0, g_5)) ** 2 + (max(0, g_6)) ** 2 \
+              + (max(0, g_7)) ** 2)
+
+        return obj
+
+    @staticmethod
+    @njit(cache=True)
+    def himmelblau(x):
+        """
+    RC32: Himmelblau's Function
+
+        This optimization problem is taken from Mechanical Engineering optimization.
+
+            Args:
+                x: Design variable with bounds [0, 1]
+                self: Object containing related parameters
+
+            Returns:
+                obj: Weighted summation of function and constraint values
+        """
+
+        # parameters
+        G1 = 85.334407 + 0.0056858 * x[1] * x[4] + 0.0006262 * x[0] * x[3] -\
+             0.0022053 * x[2] * x[4]
+        G2 = 80.51249 + 0.0071317 * x[1] * x[4] + 0.0029955 * x[0] * x[1] + \
+             0.0021813 * x[2] * x[2]
+        G3 = 9.300961 + 0.0047026 * x[2] * x[4] + 0.00125447 * x[0] * x[2] +\
+             0.0019085 * x[2] * x[3]
+
+        # objective function
+        f = 5.3578547 * x[2] * x[2] + 0.8356891 * x[0] * x[4] + \
+            37.293239 * x[0] - 40792.141
+
+        # constraints
+        g1 = -G1
+        g2 = G1 - 92
+        g3 = 90 - G2
+        g4 = G2 - 110
+        g5 = 20 - G3
+        g6 = G3 - 25
+
+        # Objective evaluation
+        k_1 = 1e1
+
+        # objective evaluation (Maximise)
+        obj = f + k_1 * ((max(0, g1)) ** 2 + (max(0, g2)) ** 2 \
+              + (max(0, g3)) ** 2 + (max(0, g4)) ** 2 \
+              + (max(0, g5)) ** 2 + (max(0, g6)) ** 2)
 
         return obj

@@ -7,7 +7,7 @@ n_param=4
 lower_limit_1=$(echo "1.0")
 upper_limit_1=$(echo "16.0")
 lower_limit_2=$(echo "0.000001")
-upper_limit_2=$(echo "0.0000016")
+upper_limit_2=$(echo "0.000016")
 
 # ---- Optimiser - General ---- #
 # Number of Gen to save state / Communications
