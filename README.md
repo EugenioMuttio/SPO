@@ -2,15 +2,15 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Code Version](https://img.shields.io/badge/Version-1.0.0-blue.svg)](https://gitlab.com/EugenioMuttio/SPO)
-[![Last Updated](https://img.shields.io/badge/Last%20Updated-Jun%2005%2C%202023-green.svg)](https://gitlab.com/EugenioMuttio/SPO)
+[![Last Updated](https://img.shields.io/badge/Last%20Updated-Mar%2009%2C%202024-green.svg)](https://gitlab.com/EugenioMuttio/SPO)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8005337.svg)](https://doi.org/10.5281/zenodo.8005337)
 
 This repository contains code to utilize a parallel optimization
 framework developed in:
 
-Muttio, E. J., Dettmer, W. G., Clarke, J., Peric, D., Ren, Z. and
-Fletcher, L. A Supervised Parallel Optimization Framework for
-Metaheuristic Algorithms 2023, [Unpublished].
+[Muttio, E.J., Dettmer, W.G., Clarke, J., Perić, D.,
+Ren, Z., Fletcher, L., 2024. A supervised parallel optimisation framework for 
+metaheuristic algorithms. Swarm and Evolutionary Computation 84, 101445.](https://doi.org/10.1016/j.swevo.2023.101445)
 
 A novel Supervised Parallel Optimisation (SPO) balances exploration and exploitation of distinct optimisers to solve
 problems with diverse characteristics. The strategy ensembles diverse gradient-free optimisation algorithms in
@@ -161,9 +161,10 @@ Citation
 If you use this code in your own work or research presented in a publication, we ask that you please cite:
 
 ```
-Muttio, E. J., Dettmer, W. G., Clarke, J., Peric, D., 
-Ren, Z., and Fletcher, L. 
-A Supervised Parallel Optimisation Framework for Metaheuristic Algorithms 2023, [Unpublished].
+Muttio, E.J., Dettmer, W.G., Clarke, J., Perić, D.,
+Ren, Z., Fletcher, L., 2024. A supervised parallel optimisation framework for 
+metaheuristic algorithms. Swarm and Evolutionary Computation 84, 101445. 
+https://doi.org/10.1016/j.swevo.2023.101445
 ```
 
 Bibtex:
@@ -171,12 +172,16 @@ Bibtex:
 ```bibtex
 
     @article{muttio_spo,
-    title = {A Supervised Parallel Optimisation Framework for
-             Metaheuristic Algorithms},
-    author = {Muttio, Eugenio J. and Dettmer, Wulf G. and
-              Clarke, Jac and Peri\'c, Djordje and
-              Ren, Zhaoxin and Fletcher, Lloyd},
-    year = {2023}, }
+	title = {A supervised parallel optimisation framework for metaheuristic algorithms},
+	volume = {84},
+	issn = {2210-6502},
+	url = {https://www.sciencedirect.com/science/article/pii/S2210650223002171},
+	doi = {10.1016/j.swevo.2023.101445},
+	journal = {Swarm and Evolutionary Computation},
+	author = {Muttio, Eugenio J. and Dettmer, Wulf G. and Clarke, Jac and Perić, Djordje and Ren, Zhaoxin and Fletcher, Lloyd},
+	year = {2024},
+	pages = {101445},
+    }
 ```
 
 ----------
