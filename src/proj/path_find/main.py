@@ -72,7 +72,6 @@ proj_parser = init_proj_args()
 # Combine parser arguments
 args = proj_parser.parse_args(extras_optim, namespace=args_optim)
 
-
 # ---------------------------- Project ----------------------------- #
 
 # Project object
@@ -86,7 +85,7 @@ proj.optim_func = proj.path_2d
 if args.run_id == 'A':
 
     prob_id = 'path_find/'
-    args.run_id = prob_id + 'RunC' + str(args.n_param) + '_' + str(args.exp_id)
+    args.run_id = prob_id + 'Run' + str(args.n_param) + '_' + str(args.exp_id)
 
 files_man = FilesMan(args)
 
@@ -131,11 +130,11 @@ if args.report == 0:
     optim = Wrapper(args, init, proj, files_man, seed)
 
     # Define optimisers in a list
-
     optim.optim_list = [MCS, MCSV1, MCSV2,
                         PymooGA, PymooDE,
                         PymooPSO, PymooPSOV1, PymooPSOV2,
                         PymooCMAES]
+
     # Run optimiser
     optim.run()
 
@@ -148,31 +147,23 @@ elif args.report == 1:
     rep = Report(args, files_man)
 
     # Plot results for selected train (args.plot)
-    # The following call plots a simple version of convergence plots and
-    # a fast version utilising colours per each optimiser.
+    # The following call plots a fast version utilising colours
+    # per each optimiser.
     # A version of the plots used in the paper can be activated in
     # the report function.
-    #rep.report_plot(proj)
+    rep.report_plot(proj)
 
-
+    # Statistical information to give to comparison plots --------------------
     # Optional: Plot comparison results for selected train (args.plot)
-    # Statistical information to give to comparison plots ----------------
     # opt_flag = True: standalone optimiser comparison
     # opt_flag = False: Wrapper comparison
-    run_name = 'Run200'
-    n_runs = 10
-    # rep.report_avg(run_name, prob_id, n_runs, opt_flag=False, n_workers=0)
+    # run_name = 'Run9'
+    # n_runs = 25
+    # rep.report_avg(run_name, prob_id, n_runs, opt_flag=False, n_workers=10)
 
-    # Run
-    # best fmin: 31.46183684
-    # Average best fmin: 31.941254391
-    # std fmin: 0.9109991570992515
-    # median fmin: 31.4634747
-    # max fmin: 34.43262239
-
-    # Comparison Plots ---------------------------------------------------
+    # Comparison Plots -------------------------------------------------------
     # Subfolder name
-    n_comp = 10
+    # n_comp = 20
     # # Runs to compare
     # runs_file = ['PSO200_5', 'GA200_7', 'CMAES200_1','MCS200_1','DE200_1']
     # # Best run id inside each folder of runs_file
@@ -189,50 +180,6 @@ elif args.report == 1:
     # rep.report_comparison(proj, prob_id, runs_file, best_run_id, opt_id,
     #                       avg_fmin, std_dev, n_comp)
 
-    # Hyperparameter Plot ---------------------------------------------------
+    # Optimisers Analysis ----------------------------------------------------
+    # rep.report_optim_analysis(run_name, prob_id, n_runs, n_comp)
 
-    # Min Data
-    # p_n [A1,B1,C1,D1,E1]
-    # n_0 [A1,B1,C1,D1,E1]
-    # stall_tol [A1,B1,C1,D1,E1]
-    # n_stall [A1,B1,C1,D1,E1]
-    # checkpoint [A1,B1,C1,D1,E1]
-    # init prob [A1,B1,C1,D1,E1]
-
-    #fmin_lim = 31.55
-    #rep.report_hyper(prob_id, n_comp, run_name, n_runs, fmin_lim)
-
-    # Optimisers Analysis ---------------------------------------------------
-    rep.report_optim_analysis(run_name, prob_id, n_runs, n_comp)
-
-
-    # Algorithmic Complexity ------------------------------------------------
-
-    # Function Eval ---------------------------------------------------------
-    # init = init(args, files_man, seed)
-    # init.pop_size = 1
-    # init.init_func()
-    # sample = init.pop_init
-    # sample = sample[0, :]
-    # eval = 0
-    #
-    # path = str(files_man.current_path) + '/results/' + prob_id \
-    #        + 'Func' + str(args.n_param) + '_' + str(args.exp_id)
-    #
-    # files_man.create_folder(path)
-    #
-    # filename = path + '/FuncEval.dat'
-
-    # while True:
-    #     conv_file = open(filename, "a")
-    #     sol = proj.optim_func(sample)
-    #     eval += 1
-    #     conv_file.write(str(eval))
-    #     conv_file.write("\n")
-    #
-    #     conv_file.close()
-
-    # Algorithmic complexity -------------------------------------------------
-    # n_worker_runs = 43
-    # n_workers = 10
-    # rep.algorithmic_complexity(proj, n_worker_runs, n_workers, filename)

@@ -87,18 +87,18 @@ args = proj_parser.parse_args(extras_optim, namespace=args_optim)
 # ---------------------------- Project ----------------------------- #
 
 # Project object
-#proj = SOChemBench(args)
+# proj = SOChemBench(args)
 proj = SOMechBench(args)
 
 # Select function to optimise
-proj.optim_func = proj.himmelblau
+proj.optim_func = proj.three_bars
 
 # ------------------------ Files Management ------------------------ #
 
 if args.run_id == 'A':
 
-    prob_id = 'app_bench/himmelblau/'
-    args.run_id = prob_id + 'Run' + str(args.n_param) + '_' + str(args.exp_id)
+    prob_id = 'app_bench/three_bars/'
+    args.run_id = prob_id + 'RunTest' + str(args.n_param) + '_' + str(args.exp_id)
 
 files_man = FilesMan(args)
 
@@ -138,9 +138,9 @@ if args.report == 0:
 
     # Three bars --------------------------------
     # lower limit
-    # init.param_range[0, :] = args.lower_limit_1
-    # # upper limit
-    # init.param_range[1, :] = args.upper_limit_1
+    init.param_range[0, :] = args.lower_limit_1
+    # upper limit
+    init.param_range[1, :] = args.upper_limit_1
 
     # Vessel design -----------------------------
     # lower limit
@@ -154,18 +154,18 @@ if args.report == 0:
     # lower limit
     # init.param_range[0, :] = args.lower_limit_1
     # init.param_range[0, 3] = args.lower_limit_2
-    # # # upper limit
+    # # upper limit
     # init.param_range[1, :] = args.upper_limit_1
     # init.param_range[1, 3] = args.upper_limit_2
 
     # Himmelblau's function ---------------------
-    # lower limit
-    init.param_range[0, 0] = 78
-    init.param_range[0, 1] = 33
-    init.param_range[0, [2, 3, 4]] = 27
-    # upper limit
-    init.param_range[1, 0] = 102
-    init.param_range[1, [1, 2, 3, 4]] = 45
+    # # lower limit
+    # init.param_range[0, 0] = 78
+    # init.param_range[0, 1] = 33
+    # init.param_range[0, [2, 3, 4]] = 27
+    # # upper limit
+    # init.param_range[1, 0] = 102
+    # init.param_range[1, [1, 2, 3, 4]] = 45
 
     # Wind Farm -----------------------------
     # lower limit
@@ -251,25 +251,23 @@ elif args.report == 1:
     rep = Report(args, files_man)
 
     # Plot results for selected train (args.plot)
-    # The following call plots a simple version of convergence plots and
-    # a fast version utilising colours per each optimiser.
+    # The following call plots a fast version utilising colours
+    # per each optimiser.
     # A version of the plots used in the paper can be activated in
     # the report function.
     rep.report_plot(proj)
 
-
+    # Statistical information to give to comparison plots --------------------
     # Optional: Plot comparison results for selected train (args.plot)
-    # Statistical information to give to comparison plots ----------------
     # opt_flag = True: standalone optimiser comparison
     # opt_flag = False: Wrapper comparison
-    run_name = 'Run5'
-    n_runs = 5
-    #rep.report_avg(run_name, prob_id, n_runs, opt_flag=False, n_workers=10)
+    # run_name = 'Run9'
+    # n_runs = 25
+    # rep.report_avg(run_name, prob_id, n_runs, opt_flag=False, n_workers=10)
 
-
-    # Comparison Plots ---------------------------------------------------
+    # Comparison Plots -------------------------------------------------------
     # Subfolder name
-    n_comp = 10
+    # n_comp = 20
     # # Runs to compare
     # runs_file = ['PSO200_5', 'GA200_7', 'CMAES200_1','MCS200_1','DE200_1']
     # # Best run id inside each folder of runs_file
@@ -286,9 +284,8 @@ elif args.report == 1:
     # rep.report_comparison(proj, prob_id, runs_file, best_run_id, opt_id,
     #                       avg_fmin, std_dev, n_comp)
 
-
-    # Optimisers Analysis ---------------------------------------------------
-    rep.report_optim_analysis(run_name, prob_id, n_runs, n_comp)
+    # Optimisers Analysis ----------------------------------------------------
+    # rep.report_optim_analysis(run_name, prob_id, n_runs, n_comp)
 
 
 

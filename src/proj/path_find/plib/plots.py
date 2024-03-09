@@ -51,6 +51,12 @@ class Plots(object):
                        'black': np.array([33, 37, 41]) / 255,
                        'grey': np.array([222, 226, 230]) / 255}
 
+        self.sota_colors = {'HSES': np.array([53, 80, 112]) / 255,
+                            'OLSHADE-CS': np.array([109, 89, 122]) / 255,
+                            'EDE-EBDE': np.array([181, 101, 118]) / 255,
+                           'SPO': np.array([0, 128, 0]) / 255}
+
+
         self.light_colors = {'red': np.array([255, 89 * 2, 94 * 2]) / 255,
                          'blue': np.array([25 * 4, 130 + 100, 255]) / 255,
                          'green': np.array([138 + 70, 230, 150]) / 255,
@@ -87,9 +93,9 @@ class Plots(object):
 
         self.font_factor = 1.8
 
-        self.fig_format = 'pdf'
+        self.fig_format = 'jpg'
         
-        self.dpi = 1000
+        self.dpi = 100
 
         # Path Planning Optimisation Parameters
         self.xs = args.xs
@@ -1750,13 +1756,13 @@ class Plots(object):
                                 np.divide(run_time[:, 2], 3600)
                 time_unit = '[hrs]'
 
-            elif max_hours < 5 and max_min > 5:
+            elif max_hours < 5 and max_min >= 5:
                 run_time_unit = np.multiply(run_time[:, 0], 60) + \
                                 run_time[:, 1] + \
                                 np.divide(run_time[:, 2], 60)
                 time_unit = '[min]'
 
-            elif max_hours < 1 and max_min <= 5:
+            elif max_hours < 1 and max_min < 5:
                 run_time_unit = np.multiply(run_time[:, 0], 3600) + \
                                 np.multiply(run_time[:, 1], 60) + \
                                 run_time[:, 2]
@@ -1817,13 +1823,13 @@ class Plots(object):
                             np.divide(wrapper_time[:, 2], 3600)
             time_unit = '[hrs]'
 
-        elif max_hours < 5 and max_min > 5:
+        elif max_hours < 5 and max_min >= 5:
             wrapper_time_unit = np.multiply(wrapper_time[:, 0], 60) + \
                             wrapper_time[:, 1] + \
                             np.divide(wrapper_time[:, 2], 60)
             time_unit = '[min]'
 
-        elif max_hours < 1 and max_min <= 5:
+        elif max_hours < 1 and max_min < 5:
             wrapper_time_unit = np.multiply(wrapper_time[:, 0], 3600) + \
                             np.multiply(wrapper_time[:, 1], 60) + \
                             wrapper_time[:, 2]
@@ -1855,7 +1861,9 @@ class Plots(object):
             matplotlib.ticker.LogFormatterSciNotation())
         #ax_time.get_xaxis().set_major_formatter(
         #    matplotlib.ticker.LogFormatterSciNotation())
-        ax_time.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
+        #ax_time.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
+        ax_time.get_xaxis().set_major_formatter(
+            matplotlib.ticker.FormatStrFormatter('%.2f'))
 
         ax_time.tick_params(axis='both', labelsize=14 * self.font_factor)
 
@@ -1867,8 +1875,8 @@ class Plots(object):
         labels.append('PymooPSO $\mu,\sigma$')
         labels.append('PymooGA $\mu,\sigma$')
         labels.append('PymooCMAES $\mu,\sigma$')
-        labels.append('PymooDE $\mu,\sigma$')
         labels.append('MCS $\mu,\sigma$')
+        labels.append('PymooDE $\mu,\sigma$')
         labels.append('SPO $\mu,\sigma$')
 
         handles = []
@@ -1973,8 +1981,7 @@ class Plots(object):
         length.append(np.sum(
             np.sqrt((x[:-1] - x[1:]) ** 2 + (y_w[:-1] - y_w[1:]) ** 2)))
 
-        ax_path.plot(x, y_w, 'o', markersize=4, linewidth=3,
-                     markeredgewidth=1.5,
+        ax_path.plot(x, y_w, 'o', markersize=4, linewidth=2,
                      color=self.opt_colors['SPO'])
                      #color='k', markerfacecolor=self.opt_colors['Wrapper'])
 
@@ -2019,6 +2026,270 @@ class Plots(object):
         path = plot_path + figname
         fig_path.savefig(path, bbox_extra_artists=(lgd,),
                          bbox_inches='tight', format=self.fig_format, dpi=self.dpi)
+        plt.close(fig_path)
+
+    def comparison_plots_sota(self, proj, prob_id, runs_file, best_run_id, opt_id,
+                         wrapper_conv, wrapper_sol, avg_fmin, std_dev, n_comp):
+
+        n_runs = len(runs_file)
+
+        # Plot path
+        plot_path = self.results_path + '/' + prob_id + \
+                    'Comp' + str(self.n_param) + '_' + str(n_comp)
+        self.files_man.create_folder(plot_path)
+
+        # Conv Plot
+        # fig_conv, ax_conv = plt.subplots(figsize=(8, 6))
+
+        # Time Plot
+        fig_time, ax_time = plt.subplots(figsize=(8, 7))
+
+        # Path Plot
+        fig_path, ax_path = plt.subplots(figsize=(12, 8))
+
+        # Circle Obstacles
+        xobs = proj.xobs  # circle centre x-coords
+        yobs = proj.yobs  # circle centre y-coords
+        robs = proj.robs  # radii
+
+        x = np.linspace(self.xs, self.xt, self.n_param)
+        length = []
+        t_aux = 20
+        for ri in range(n_runs):
+
+            # File Paths
+            run_id = self.results_path + '/' + prob_id + \
+                     runs_file[ri] + '/0'
+
+            # Convergence path
+            conv_path = run_id + '/' + 'conv.dat'
+
+            # Read Convergence
+            conv = \
+                np.genfromtxt(conv_path)
+
+            num_data = int(len(conv) / self.data_checkpoint)
+
+            fmin = conv[:, 1]
+
+            #time_unit = '[min]'
+            time_unit = '[hrs]'
+
+            run_time_unit = conv[:, 2] / 3600
+
+            ax_time.loglog(run_time_unit, fmin, "-o",
+                           color=self.sota_colors[opt_id[ri]], markersize=5)
+
+            ax_time.errorbar(t_aux, avg_fmin[ri],
+                             yerr=std_dev[ri], marker="<",
+                             ecolor=self.sota_colors[opt_id[ri]],
+                             elinewidth=2,
+                             markerfacecolor=self.sota_colors[opt_id[ri]],
+                             color='k', markersize=8,
+                             markeredgewidth=2)
+
+            t_aux += 5
+
+            # Model path
+            model_path = self.results_path + '/' + prob_id + \
+                         runs_file[ri] + '/' + best_run_id[
+                             ri] + '/' + 'model.dat'
+
+            # Read best model
+            y = np.loadtxt(model_path)
+
+            y[0] = self.ys
+            y[-1] = self.yt
+
+            # Calculate real length
+            length.append(np.sum(
+                np.sqrt((x[:-1] - x[1:]) ** 2 + (y[:-1] - y[1:]) ** 2)))
+
+            ax_path.plot(x, y, '-o', markersize=4, linewidth=2,
+                         color=self.sota_colors[opt_id[ri]])
+
+        # Convergence Time ----------------------------------------------
+
+        wrapper_gen = []
+        wrapper_fmin = []
+        wrapper_time = np.zeros((1, 3))
+
+        num_data = int(len(wrapper_conv) / self.data_checkpoint)
+
+        for di in range(num_data):
+            wrapper_gen.append(wrapper_conv[di][4] * self.checkpoint)
+            wrapper_fmin.append(wrapper_conv[di][5])
+
+            # Time
+            aux = wrapper_conv[di][10].decode('ASCII')
+            aux_b = aux.split(':')
+            aux_c = np.array(aux_b).astype(float)
+            aux_d = aux_c.reshape((1, 3))
+            wrapper_time = np.concatenate((wrapper_time, aux_d), axis=0)
+
+        max_hours = np.max(wrapper_time[:, 0])
+        max_min = np.max(wrapper_time[:, 1])
+
+        if max_hours >= 5:
+            wrapper_time_unit = wrapper_time[:, 0] + \
+                                np.divide(wrapper_time[:, 1], 60) + \
+                                np.divide(wrapper_time[:, 2], 3600)
+            time_unit = '[hrs]'
+
+        elif max_hours < 5 and max_min >= 5:
+            wrapper_time_unit = np.multiply(wrapper_time[:, 0], 60) + \
+                                wrapper_time[:, 1] + \
+                                np.divide(wrapper_time[:, 2], 60)
+            time_unit = '[min]'
+
+        elif max_hours < 1 and max_min < 5:
+            wrapper_time_unit = np.multiply(wrapper_time[:, 0], 3600) + \
+                                np.multiply(wrapper_time[:, 1], 60) + \
+                                wrapper_time[:, 2]
+            time_unit = '[s]'
+
+        ax_time.loglog(wrapper_time_unit[1:], wrapper_fmin, "-o",
+                       color=self.sota_colors['SPO'],
+                       markersize=5)
+
+        ax_time.errorbar(35, avg_fmin[-1],
+                         yerr=std_dev[-1], marker="<",
+                         ecolor=self.sota_colors['SPO'],
+                         elinewidth=2,
+                         markerfacecolor=self.sota_colors['SPO'],
+                         color='k', markersize=8,
+                         markeredgewidth=2)
+
+        ax_time.set_xscale("log")
+        ax_time.set_yscale("log")
+        ax_time.set_xlabel('Time ' + str(time_unit),
+                           fontsize=16 * self.font_factor)
+        ax_time.set_ylabel('Cost', fontsize=16 * self.font_factor)
+
+        ax_time.set_ylim(30, 3000)
+        ax_time.grid()
+
+        ax_time.get_yaxis().set_major_formatter(
+            matplotlib.ticker.LogFormatterSciNotation())
+        ax_time.get_yaxis().set_minor_formatter(
+            matplotlib.ticker.LogFormatterSciNotation())
+        # ax_time.get_xaxis().set_major_formatter(
+        #    matplotlib.ticker.LogFormatterSciNotation())
+        #ax_time.get_xaxis().set_major_formatter(
+        #    matplotlib.ticker.ScalarFormatter())
+        ax_time.get_xaxis().set_major_formatter(
+            matplotlib.ticker.FormatStrFormatter('%.2f'))
+
+        ax_time.tick_params(axis='both', labelsize=14 * self.font_factor)
+
+        fig_time.tight_layout()
+
+        labels = opt_id.copy()
+        labels.append('SPO')
+
+        labels.append('HSES $\mu,\sigma$')
+        labels.append('OLSHADE-CS $\mu,\sigma$')
+        labels.append('EDE-EBDE $\mu,\sigma$')
+        labels.append('SPO $\mu,\sigma$')
+
+        handles = []
+
+        for ri in opt_id:
+            handles.append(plt.plot([], 'o',
+                                    color=self.sota_colors[ri],
+                                    markersize=5)[0])
+
+        handles.append(plt.plot([], 'o',
+                                linewidth=3,
+                                color=self.sota_colors['SPO'],
+                                markersize=5)[0])
+
+        for ri in opt_id:
+            handles.append(plt.errorbar([], [], [], marker="<",
+                                        color=self.sota_colors[ri],
+                                        ecolor=self.sota_colors[ri],
+                                        elinewidth=2,
+                                        markerfacecolor=self.sota_colors[ri],
+                                        markeredgecolor='k', markersize=8,
+                                        markeredgewidth=2)[0])
+
+        handles.append(plt.errorbar([], [], [], marker="<",
+                                    color=self.sota_colors['SPO'],
+                                    ecolor=self.sota_colors['SPO'],
+                                    elinewidth=2,
+                                    markerfacecolor=self.opt_colors['SPO'],
+                                    markeredgecolor='k', markersize=8,
+                                    markeredgewidth=2)[0])
+
+        lgd = fig_time.legend(handles=handles, labels=labels,
+                              fancybox=False,
+                              prop={"size": 12 * self.font_factor}, ncol=1,
+                              frameon=False, loc='upper right',
+                              bbox_to_anchor=(1.45, 0.98))
+
+        figname = '/ConvCompTime.' + self.fig_format
+        path = plot_path + figname
+        fig_time.savefig(path, bbox_extra_artists=(lgd,),
+                         bbox_inches='tight', format=self.fig_format,
+                         dpi=self.dpi)
+        plt.close(fig_time)
+
+        # Path Plot  -------------------------------------------------------
+        # circles
+        y_w = wrapper_sol
+        y_w[0] = self.ys
+        y_w[-1] = self.yt
+        # Wrapper model
+        # Calculate real length
+        length.append(np.sum(
+            np.sqrt((x[:-1] - x[1:]) ** 2 + (y_w[:-1] - y_w[1:]) ** 2)))
+
+        ax_path.plot(x, y_w, 'o-', markersize=4, linewidth=2,
+                     color=self.sota_colors['SPO'])
+        # color='k', markerfacecolor=self.opt_colors['Wrapper'])
+
+        for i in range(len(xobs)):
+            circle = plt.Circle((xobs[i], yobs[i]), robs[i], color='k')
+            ax_path.add_patch(circle)
+
+        plt.xlim(self.xs, self.xt)
+        plt.ylim(-15, 15)
+        plt.gca().set_aspect('equal')
+
+        ax_path.set_xlabel('x', fontsize=14 * self.font_factor)
+        ax_path.set_ylabel('y', fontsize=14 * self.font_factor)
+        ax_path.tick_params(axis='both', labelsize=14 * self.font_factor)
+
+        # labels = []
+        # for ri in range(len(opt_id)-1):
+        # labels.append(opt_id[ri] + ' L: ' + str("{:2.3f}".format(length[ri])))
+
+        labels = opt_id.copy()
+
+        labels.append('SPO')
+
+        handles = []
+
+        for ri in opt_id:
+            handles.append(plt.plot([], 'o',
+                                    color=self.sota_colors[ri],
+                                    markersize=5)[0])
+
+        handles.append(plt.plot([], 'o',
+                                linewidth=3,
+                                color=self.sota_colors['SPO'],
+                                markersize=5)[0])
+
+        # lgd = fig_path.legend(handles=handles, labels=labels,
+        #                       fancybox=False,
+        #                       prop={"size": 12 * self.font_factor}, ncol=1,
+        #                       frameon=False, loc='upper right',
+        #                       bbox_to_anchor=(1.025, 0.97))
+
+        figname = '/Sol.' + self.fig_format
+        path = plot_path + figname
+        fig_path.savefig(path, bbox_inches='tight', format=self.fig_format,
+                         dpi=self.dpi)
         plt.close(fig_path)
 
     def comparison_errorbar(self, prob_id,opt_id, avg_fmin, std_dev, n_comp):

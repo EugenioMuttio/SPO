@@ -77,24 +77,24 @@ class Report(object):
         # Plot object
         plot = Plots(self.args, self.files_man)
 
-        # Global convergence simple (suggested)
-        #plot.global_convergence_simple(self.global_conv)
+        # Global convergence simple
+        # plot.global_convergence_simple(self.global_conv)
 
         # Global convergence fast (suggested)
         # The issue with this is that optimisers are plotted in groups,
         # Then, first optimiser will be back of the others
-        #plot.global_convergence_fast(self.global_conv)
+        plot.global_convergence_fast(self.global_conv)
 
         # Global convergence according to supervisor messages
         # PLots produced in the paper are produced with this function
-        # (Not suggested due to matplotlib computational time)
+        # It takes more time to produce the plots
         # plot.global_convergence(self.global_conv)
 
         # Plot global best trajectory:
-        #plot.path_2d(self.sol, proj)
+        plot.path_2d(self.sol, proj)
 
-        # Optim Analysis
-        plot.optim_analysis(self.global_conv)
+        # Optim Analysis (Messages from the supervisor)
+        # plot.optim_analysis(self.global_conv)
 
     def report_comparison(self, proj, prob_id, runs_file, best_run_id, opt_id,
                           avg_fmin, std_dev, n_comp):
@@ -107,7 +107,6 @@ class Report(object):
             A group of plots within a directory called 'Plots' inside
             the run selected.
         """
-
 
         # Read wrapper Convergence
         self.global_conv = \
@@ -123,13 +122,31 @@ class Report(object):
         # Plot object
         plot = Plots(self.args, self.files_man)
 
+        # Comparison with embedded optimisers --------------------------------
         plot.comparison_plots(proj, prob_id, runs_file, best_run_id, opt_id,
-                              self.global_conv, self.sol, avg_fmin, std_dev, n_comp)
+                              self.global_conv, self.sol, avg_fmin, std_dev,
+                              n_comp)
 
         plot.comparison_errorbar(prob_id, opt_id, avg_fmin, std_dev, n_comp)
 
-    def report_avg(self, run_name, prob_id, n_runs, opt_flag, n_workers):
+        # SOTA comparison -----------------------------------------------------
+        # plot.comparison_plots_sota(proj, prob_id, runs_file, best_run_id,
+        # opt_id, self.global_conv, self.sol, avg_fmin, std_dev, n_comp)
 
+    def report_avg(self, run_name, prob_id, n_runs, opt_flag, n_workers):
+        """
+        Statistics of the convergence of the runs.
+
+        Args:
+            run_name: str - Name of the run
+            prob_id: str - Problem ID
+            n_runs: int - Number of runs
+            opt_flag: bool - Flag to indicate if the optimiser is embedded
+            n_workers: int - Number of workers
+        Returns:
+            Statistics of the convergence of the runs.
+
+        """
 
         riwi = 1
         for ri in range(1,n_runs+1):
@@ -163,7 +180,8 @@ class Report(object):
                     if riwi == 1:
                         best_opt_conv = opt_conv[-1, :]
                     else:
-                        best_opt_conv = np.vstack((best_opt_conv, opt_conv[-1, :]))
+                        best_opt_conv = np.vstack((best_opt_conv,
+                                                   opt_conv[-1, :]))
 
                     riwi += 1
 
@@ -173,28 +191,82 @@ class Report(object):
         median_fmin = np.median(best_conv[:, 5])
         max_best_fmin = np.max(best_conv[:, 5])
 
-        print('best fmin: ', min_best_fmin)
+        ind_best_fmin = np.argmin(best_conv[:, 5])
+
+        print('best fmin: ', min_best_fmin, ' index: ', ind_best_fmin+1)
         print('Average best fmin: ', avg_best_fmin)
         print('std fmin: ', std_fmin)
         print('median fmin: ', median_fmin)
         print('max fmin: ', max_best_fmin)
+
 
         if opt_flag:
             avg_opt_fmin = np.mean(best_opt_conv[:, 2])
             std_opt_fmin = np.std(best_opt_conv[:, 2])
             median_opt_fmin = np.median(best_opt_conv[:, 2])
             max_opt_fmin = np.max(best_opt_conv[:, 2])
+
             print('Average opt fmin: ', avg_opt_fmin)
             print('std opt fmin: ', std_opt_fmin)
             print('median opt fmin: ', median_opt_fmin)
             print('max opt fmin: ', max_opt_fmin)
 
+    def report_avg_sota(self, run_name, prob_id, n_runs):
+        """
+        Statistics of the convergence of the runs with SOTA algorithms.
+
+        args:
+            run_name: str - Name of the run
+            prob_id: str - Problem ID
+            n_runs: int - Number of runs
+
+        """
+
+        for ri in range(1,n_runs+1):
+            # File Paths
+            run_id = self.files_man.results_path + '/' + prob_id + run_name
+
+            # Convergence path
+            best_path = run_id + '/' + 'best_' + str(ri) + '.dat'
+
+            # Read best result
+            best_aux = \
+                np.genfromtxt(best_path)
+
+            if ri == 1:
+                best_conv = best_aux
+            else:
+                best_conv = np.vstack((best_conv, best_aux))
+
+
+        min_best_fmin = np.min(best_conv[:, 1])
+        avg_best_fmin = np.mean(best_conv[:, 1])
+        std_fmin = np.std(best_conv[:, 1])
+        median_fmin = np.median(best_conv[:, 1])
+        max_best_fmin = np.max(best_conv[:, 1])
+
+        ind_best_fmin = np.argmin(best_conv[:, 1])
+
+        print('best fmin: ', min_best_fmin, ' index: ', ind_best_fmin+1)
+        print('Average best fmin: ', avg_best_fmin)
+        print('std fmin: ', std_fmin)
+        print('median fmin: ', median_fmin)
+        print('max fmin (worse): ', max_best_fmin)
+
 
     def report_hyper(self, prob_id, n_comp, run_name, n_runs, fmin_lim):
         """
+        Hyperparameters analysis report.
         Function activated when --report is 1.
         This function requires to define --nrun num, where num is the
         test experiment that is selected to plot results.
+
+        args:
+            prob_id: str - Problem ID
+            n_comp: int - Number of comparisons
+            run_name: str - Name of the run
+            n_runs: int - Number of runs
+            fmin_lim: float - Limit of the fmin value
 
         Returns:
             A group of plots within a directory called 'Plots' inside
@@ -205,7 +277,6 @@ class Report(object):
         plot = Plots(self.args, self.files_man)
 
         # Read wrapper Convergence
-
         n_hyper = 6
         hyper_value_id = ['A', 'B', 'C', 'D', 'E']
         hyper_time = np.zeros((n_runs, 6, len(hyper_value_id)))
@@ -301,14 +372,19 @@ class Report(object):
         plot.hyper_plots(prob_id, tmin_list, avg_tmin_list,
                          time_std_dev_list, name_list, n_comp, ylabel='Time (h)', ylim=[0, 20.0],col_n=2)
 
-
-
-
     def report_optim_analysis(self, run_name, prob_id, n_runs, n_comp):
         """
+        Function to evaluate the message communication of the supervisor.
+
         Function activated when --report is 1.
         This function requires to define --nrun num, where num is the
         test experiment that is selected to plot results.
+
+        Args:
+            run_name (str): Name of the run.
+            prob_id (str): Problem id.
+            n_runs (int): Number of runs.
+            n_comp (int): Number of comparisons.
 
         Returns:
             A group of plots within a directory called 'Plots' inside
@@ -337,12 +413,19 @@ class Report(object):
 
     def algorithmic_complexity(self, proj, n_worker_runs, n_workers, func_file):
         """
-                Function activated when --report is 1.
-                Computes the algorithmic complexity of the problem
+        Algorithmic complexity of the problem.
+        Function activated when --report is 1.
+        Computes the algorithmic complexity of the problem
 
-                Returns:
+        Args:
+            proj (str): Project object.
+            n_worker_runs (int): Number of worker runs.
+            n_workers (int): Number of workers.
+            func_file (str): Function file.
 
-                """
+        Returns:
+            A group of plots within a directory called 'Plots' inside
+        """
 
         eval_dict = {}
         for ri in range(1, n_worker_runs + 1):

@@ -56,27 +56,27 @@ class Report(object):
         """
 
         # Read Convergence
-        #self.conv = np.genfromtxt(self.conv_path, delimiter="\t")
+        # self.conv = np.genfromtxt(self.conv_path, delimiter="\t")
 
         # Read Global Convergence
         self.global_conv = \
             np.genfromtxt(self.global_conv_path,
                           dtype=(
-                          int, int, int, float, int, float, int, int, int,
-                          float, 'S11', 'S10', 'S10'),
+                              int, int, int, float, int, float, int, int, int,
+                              float, 'S11', 'S10', 'S10'),
                           delimiter="\t")
 
         # Read best model
         self.sol = np.loadtxt(self.sol_path)
-        
+
         # Plot folder
         self.files_man.plot_folder()
 
         # Plot object
         plot = Plots(self.args, self.files_man)
 
-        # Global convergence simple (suggested)
-        plot.global_convergence_simple(self.global_conv)
+        # Global convergence simple
+        # plot.global_convergence_simple(self.global_conv)
 
         # Global convergence fast (suggested)
         # The issue with this is that optimisers are plotted in groups,
@@ -85,8 +85,14 @@ class Report(object):
 
         # Global convergence according to supervisor messages
         # PLots produced in the paper are produced with this function
-        # (Not suggested due to matplotlib computational time)
+        # It takes more time to produce the plots
         # plot.global_convergence(self.global_conv)
+
+        # Plot global best trajectory:
+        plot.path_2d(self.sol, proj)
+
+        # Optim Analysis (Messages from the supervisor)
+        # plot.optim_analysis(self.global_conv)
 
     def report_comparison(self, proj, prob_id, runs_file, best_run_id, opt_id,
                           avg_fmin, std_dev, n_comp):
@@ -99,7 +105,6 @@ class Report(object):
             A group of plots within a directory called 'Plots' inside
             the run selected.
         """
-
 
         # Read wrapper Convergence
         self.global_conv = \
@@ -115,16 +120,34 @@ class Report(object):
         # Plot object
         plot = Plots(self.args, self.files_man)
 
+        # Comparison with embedded optimisers --------------------------------
         plot.comparison_plots(proj, prob_id, runs_file, best_run_id, opt_id,
-                              self.global_conv, self.sol, avg_fmin, std_dev, n_comp)
+                              self.global_conv, self.sol, avg_fmin, std_dev,
+                              n_comp)
 
         plot.comparison_errorbar(prob_id, opt_id, avg_fmin, std_dev, n_comp)
 
-    def report_avg(self, run_name, prob_id, n_runs, opt_flag, n_workers):
+        # SOTA comparison -----------------------------------------------------
+        # plot.comparison_plots_sota(proj, prob_id, runs_file, best_run_id,
+        # opt_id, self.global_conv, self.sol, avg_fmin, std_dev, n_comp)
 
+    def report_avg(self, run_name, prob_id, n_runs, opt_flag, n_workers):
+        """
+        Statistics of the convergence of the runs.
+
+        Args:
+            run_name: str - Name of the run
+            prob_id: str - Problem ID
+            n_runs: int - Number of runs
+            opt_flag: bool - Flag to indicate if the optimiser is embedded
+            n_workers: int - Number of workers
+        Returns:
+            Statistics of the convergence of the runs.
+
+        """
 
         riwi = 1
-        for ri in range(1,n_runs+1):
+        for ri in range(1, n_runs + 1):
             # File Paths
             run_id = self.files_man.results_path + '/' + prob_id + \
                      run_name + '_' + str(ri) + '/0'
@@ -155,7 +178,8 @@ class Report(object):
                     if riwi == 1:
                         best_opt_conv = opt_conv[-1, :]
                     else:
-                        best_opt_conv = np.vstack((best_opt_conv, opt_conv[-1, :]))
+                        best_opt_conv = np.vstack((best_opt_conv,
+                                                   opt_conv[-1, :]))
 
                     riwi += 1
 
@@ -165,7 +189,9 @@ class Report(object):
         median_fmin = np.median(best_conv[:, 5])
         max_best_fmin = np.max(best_conv[:, 5])
 
-        print('best fmin: ', min_best_fmin)
+        ind_best_fmin = np.argmin(best_conv[:, 5])
+
+        print('best fmin: ', min_best_fmin, ' index: ', ind_best_fmin + 1)
         print('Average best fmin: ', avg_best_fmin)
         print('std fmin: ', std_fmin)
         print('median fmin: ', median_fmin)
@@ -176,17 +202,25 @@ class Report(object):
             std_opt_fmin = np.std(best_opt_conv[:, 2])
             median_opt_fmin = np.median(best_opt_conv[:, 2])
             max_opt_fmin = np.max(best_opt_conv[:, 2])
+
             print('Average opt fmin: ', avg_opt_fmin)
             print('std opt fmin: ', std_opt_fmin)
             print('median opt fmin: ', median_opt_fmin)
             print('max opt fmin: ', max_opt_fmin)
 
-
     def report_optim_analysis(self, run_name, prob_id, n_runs, n_comp):
         """
+        Function to evaluate the message communication of the supervisor.
+
         Function activated when --report is 1.
         This function requires to define --nrun num, where num is the
         test experiment that is selected to plot results.
+
+        Args:
+            run_name (str): Name of the run.
+            prob_id (str): Problem id.
+            n_runs (int): Number of runs.
+            n_comp (int): Number of comparisons.
 
         Returns:
             A group of plots within a directory called 'Plots' inside
@@ -211,4 +245,3 @@ class Report(object):
                               delimiter="\t"))
 
         plot.optim_analysis_comp(global_conv, prob_id, n_comp, n_runs)
-

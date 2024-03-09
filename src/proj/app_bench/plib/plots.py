@@ -80,9 +80,9 @@ class Plots(object):
 
         self.font_factor = 1.8
 
-        self.fig_format = 'pdf'
+        self.fig_format = 'jpg'
         
-        self.dpi = 1000
+        self.dpi = 100
 
         # Path Planning Optimisation Parameters
         self.n_param = args.n_param
@@ -98,11 +98,11 @@ class Plots(object):
         # Plot limits
         self.yl1, self.yl2 = None, None
         # Plot zoom limits
-        self.ylz1, self.ylz2 = None, None#None, None
+        self.ylz1, self.ylz2 = None, None
         
         # Figure size
         self.h_dim = 15.0
-        self.v_dim = 6.0
+        self.v_dim = 7.0
 
     def global_convergence_simple(self, conv_data):
         """
@@ -1178,17 +1178,18 @@ class Plots(object):
                 plt.plot([], '^', color=self.opt_colors[best_name[-1]],
                          markersize=7.5)[0]
 
-        lgd = plt.legend(handles=handles, labels=labels,
-                         fancybox=False,
-                         prop={"size": 10 * self.font_factor},
-                         ncol=1,
-                         frameon=False, loc='upper right',
-                         bbox_to_anchor=(1.35, 0.99))
+        # lgd = plt.legend(handles=handles, labels=labels,
+        #                  fancybox=False,
+        #                  prop={"size": 10 * self.font_factor},
+        #                  ncol=1,
+        #                  frameon=False, loc='upper right',
+        #                  bbox_to_anchor=(1.35, 0.99))
 
         figname = 'ConvZoom.' + self.fig_format
         path = self.rep_path + figname
-        fig.savefig(path, bbox_extra_artists=(lgd,),
-                    bbox_inches='tight', format=self.fig_format, dpi=self.dpi)
+        fig.savefig(path,
+                    bbox_inches='tight', format=self.fig_format,
+                    dpi=self.dpi) #, bbox_extra_artists=(lgd,))
         plt.close(fig)
         del fig, ax
 
@@ -1257,16 +1258,17 @@ class Plots(object):
         fig.tight_layout()
 
 
-        lgd = plt.legend(handles=handles, labels=labels,
-                         fancybox=False, prop={"size": 10 * self.font_factor},
-                         ncol=1,
-                         frameon=False, loc='upper right',
-                         bbox_to_anchor=(1.35, 0.99))
+        # lgd = plt.legend(handles=handles, labels=labels,
+        #                  fancybox=False, prop={"size": 10 * self.font_factor},
+        #                  ncol=1,
+        #                  frameon=False, loc='upper right',
+        #                  bbox_to_anchor=(1.35, 0.99))
 
         figname = 'Convlog.' + self.fig_format
         path = self.rep_path + figname
-        fig.savefig(path, bbox_extra_artists=(lgd,),
-                    bbox_inches='tight', format=self.fig_format, dpi=self.dpi)
+        fig.savefig(path,
+                    bbox_inches='tight', format=self.fig_format,
+                    dpi=self.dpi)#, bbox_extra_artists=(lgd,))
         plt.close(fig)
         del fig, ax
 
@@ -2415,11 +2417,11 @@ class Plots(object):
             i += 1
 
         labels = my_keys
-        #ax.set_ylabel('Total opt msg (%)', fontsize=16 * self.font_factor)
+        ax.set_ylabel('Total opt msg (%)', fontsize=16 * self.font_factor)
         ax.set_xticks(x_pos)
         ax.set_xticklabels(labels, rotation=90)
         ax.tick_params(axis='both', labelsize=14 * self.font_factor)
-        ax.set_ylim([0, 55])
+        ax.set_ylim([0, 100])
 
         figname = '/MsgMean.' + self.fig_format
         plot_path = self.results_path + '/' + prob_id + \
@@ -2455,7 +2457,7 @@ class Plots(object):
             i += 1
 
         labels = my_keys
-        #ax.set_ylabel('Best opt msg (%)', fontsize=16 * self.font_factor)
+        ax.set_ylabel('Best opt msg (%)', fontsize=16 * self.font_factor)
         ax.set_xticks(x_pos)
         ax.set_xticklabels(labels, rotation=90)
         ax.tick_params(axis='both', labelsize=14 * self.font_factor)
