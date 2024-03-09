@@ -31,7 +31,9 @@ from lib.other.args_file import init_args
 from lib.other.tools import Timer
 
 # Project Library
-from plib.so_path import SOPathPlanning
+from plib.so_mech_bench import SOMechBench
+from plib.so_power_bench import SOPowerBench
+from plib.so_chem_bench import SOChemBench
 from plib.report import Report
 from plib.proj_args_file import init_proj_args
 
@@ -45,7 +47,16 @@ from plib.proj_args_file import init_proj_args
 
 # Objective Functions:
 
-# - Path Finding Optimisation
+# Chemical Benchmark Problems:
+# - Propane, isobutane, n-butane nonsharp separation
+
+# Mechanical Benchmark Problems:
+# - Three Bars
+# - Vessel Design
+# - Thrust Design
+
+# Power Benchmark Problems:
+# - Wind Farm
 
 # Optimisation Algorithms:
 
@@ -72,20 +83,22 @@ proj_parser = init_proj_args()
 # Combine parser arguments
 args = proj_parser.parse_args(extras_optim, namespace=args_optim)
 
+
 # ---------------------------- Project ----------------------------- #
 
 # Project object
-proj = SOPathPlanning(args)
+# proj = SOChemBench(args)
+proj = SOMechBench(args)
 
 # Select function to optimise
-proj.optim_func = proj.path_2d
+proj.optim_func = proj.three_bars
 
 # ------------------------ Files Management ------------------------ #
 
 if args.run_id == 'A':
 
-    prob_id = 'path_find/'
-    args.run_id = prob_id + 'Run' + str(args.n_param) + '_' + str(args.exp_id)
+    prob_id = 'app_bench/three_bars/'
+    args.run_id = prob_id + 'RunTest' + str(args.n_param) + '_' + str(args.exp_id)
 
 files_man = FilesMan(args)
 
@@ -120,20 +133,111 @@ if args.report == 0:
     # 'RU' - Random Uniform
     init.func = 'RU'
 
-    # Path Find --------------------------------
+    # Param range: An array of size (2, n_param) where the first row is the
+    # lower limit and the second row is the upper limit for each parameter.
+
+    # Three bars --------------------------------
     # lower limit
-    init.param_range[0, :] = args.lower_limit
+    init.param_range[0, :] = args.lower_limit_1
     # upper limit
-    init.param_range[1, :] = args.upper_limit
+    init.param_range[1, :] = args.upper_limit_1
+
+    # Vessel design -----------------------------
+    # lower limit
+    # init.param_range[0, :2] = args.lower_limit_1
+    # init.param_range[0, 2:] = args.lower_limit_2
+    # # upper limit
+    # init.param_range[1, :2] = args.upper_limit_1
+    # init.param_range[1, 2:] = args.upper_limit_2
+
+    # Thrust design -----------------------------
+    # lower limit
+    # init.param_range[0, :] = args.lower_limit_1
+    # init.param_range[0, 3] = args.lower_limit_2
+    # # upper limit
+    # init.param_range[1, :] = args.upper_limit_1
+    # init.param_range[1, 3] = args.upper_limit_2
+
+    # Himmelblau's function ---------------------
+    # # lower limit
+    # init.param_range[0, 0] = 78
+    # init.param_range[0, 1] = 33
+    # init.param_range[0, [2, 3, 4]] = 27
+    # # upper limit
+    # init.param_range[1, 0] = 102
+    # init.param_range[1, [1, 2, 3, 4]] = 45
+
+    # Wind Farm -----------------------------
+    # lower limit
+    # init.param_range[0, :] = args.lower_limit_1
+    # # upper limit
+    # init.param_range[1, :] = args.upper_limit_1
+
+    # SOPWM --------------------------------
+    # # lower limit
+    # init.param_range[0, :] = args.lower_limit_1
+    # # upper limit
+    # init.param_range[1, :] = args.upper_limit_1
+
+    # Nonsharp Separation ------------------------
+    # args.lower_limit_1 = 0.0
+    # args.upper_limit_1 = 150.0
+    # args.lower_limit_2 = 0.0
+    # args.upper_limit_2 = 30.0
+    # args.lower_limit_3 = 0.0
+    # args.upper_limit_3 = 1.0
+    # args.lower_limit_4 = 0.85
+    # args.upper_limit_4 = 1.0
+    # # lower limit
+    # init.param_range[0, :] = 0.0
+    # init.param_range[0, 0:20] = args.lower_limit_1
+    # init.param_range[0, [24, 26, 31, 34, 36, 28]] = args.lower_limit_2
+    # init.param_range[0, [20, 21, 22, 29, 32, 33, 35, 37, 38, 39, 41, 42, 43, 44, 45, 46, 47]] = args.lower_limit_3
+    # init.param_range[0, [23, 25, 27, 30]] = args.lower_limit_4
+    # # upper limit
+    # init.param_range[1, :] = 1.0
+    # init.param_range[1, 0:20] = args.upper_limit_1
+    # init.param_range[1, [24, 26, 31, 34, 36, 28]] = args.upper_limit_2
+    # init.param_range[1, [20, 21, 22, 29, 32, 33, 35, 37, 38, 39, 41, 42, 43, 44, 45, 46, 47]] = args.upper_limit_3
+    # init.param_range[1, [23, 25, 27, 30]] = args.upper_limit_4
+
+    # Heat exchanger network design (Case 1) ------------------------
+    # lower limit
+    # init.param_range[0, [0, 1, 2, 3, 5]] = 0
+    # init.param_range[0, 4] = 1000
+    # init.param_range[0, [6, 7, 8]] = 100
+    # # upper limit
+    # init.param_range[1, 0] = 10
+    # init.param_range[1, [1, 3]] = 200
+    # init.param_range[1, 2] = 100
+    # init.param_range[1, 4] = 2000000
+    # init.param_range[1, [5, 6, 7]] = 600
+    # init.param_range[1, 8] = 900
+
+    # Heat exchanger network design (Case 2) ------------------------
+    # lower limit
+    # init.param_range[0, [0, 1, 2]] = 1e4
+    # init.param_range[0, [3, 4, 5]] = 0
+    # init.param_range[0, [6, 7, 8, 9, 10]] = 100
+    # # upper limit
+    # init.param_range[1, 0] = 81.9e4
+    # init.param_range[1, 1] = 113.1e4
+    # init.param_range[1, 2] = 205e4
+    # init.param_range[1, [3, 4, 5]] = 5.074e-2
+    # init.param_range[1, 6] = 200
+    # init.param_range[1, [7, 8, 9]] = 300
+    # init.param_range[1, 10] = 400
 
     # ------------------------- Optimiser ------------------------ #
     optim = Wrapper(args, init, proj, files_man, seed)
 
     # Define optimisers in a list
+
     optim.optim_list = [MCS, MCSV1, MCSV2,
-                        PymooGA, PymooDE,
-                        PymooPSO, PymooPSOV1, PymooPSOV2,
-                        PymooCMAES]
+                        PymooGA, PymooPSO, PymooPSOV1, PymooPSOV2,
+                        PymooCMAES, PymooDE]
+
+    # optim = MCS(args, init, proj, files_man, seed)
 
     # Run optimiser
     optim.run()
@@ -182,4 +286,7 @@ elif args.report == 1:
 
     # Optimisers Analysis ----------------------------------------------------
     # rep.report_optim_analysis(run_name, prob_id, n_runs, n_comp)
+
+
+
 

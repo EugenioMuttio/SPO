@@ -15,8 +15,7 @@ class PymooGA(object):
         General problem parameters:
 
         n_param: Number of trainable parameters per agent/individual
-        lower_limit: Parameter range limit
-        upper_limit: Parameter range limit
+
         max_gen: Maximum generations
 
         checkpoint: At "n" checkpoints, a state is saved and a MPI
@@ -42,8 +41,6 @@ class PymooGA(object):
 
         # Problem parameters
         self.n_param = args.n_param
-        self.lower_limit = args.lower_limit
-        self.upper_limit = args.upper_limit
 
         # Optimiser Parameters
         self.pop_size = args.pso_pop_size
@@ -187,12 +184,25 @@ class PymooGA(object):
         # Taking first sample from pop to initialise f min
         local_sol = self.pop_init[0, :]
         local_fmin = np.nan_to_num(self.pymoo_prob.eval_obj(local_sol),
-                                   nan=10000)
+                                   nan=1e10)
 
         while self.algorithm.has_next():
 
             # ask the algorithm for the next solution to be evaluated
             pop = self.algorithm.ask()
+
+            # Easy solution for DE pop ask() and infills problem
+            pop_none = False
+            if pop is None:
+                pop_none = True
+
+            elif pop.size < self.pop_size:
+                pop_none = True
+
+            i = 0
+            while pop_none and i < self.pop_size:
+                pop = pop.merge(pop, pop[i])
+                i += 1
 
             # evaluate the individuals using the algorithm's evaluator
             # (necessary to count evaluations for termination)
@@ -260,6 +270,8 @@ class PymooGA(object):
 
             filename = self.run_path + '/' + 'conv.dat'
             conv_file = open(filename, "a")
+            conv_file.write(str(self.name))
+            conv_file.write("\t")
             conv_file.write(str(self.igen))
             conv_file.write("\t")
             conv_file.write(str(self.num_eval))

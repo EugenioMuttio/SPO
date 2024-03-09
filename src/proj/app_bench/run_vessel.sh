@@ -2,22 +2,16 @@
 
 # ---- Problem Definition ---- #
 # Number of parameters
-n_param=200
+n_param=4
 # Parameter limits
-lower_limit=$(echo "-15.0")
-upper_limit=$(echo "15.0")
-
-# - Path planning Definition - #
-# Start Coordinates
-xs=$(echo "0.0")
-ys=$(echo "0.0")
-# Target Coordinates
-xt=$(echo "30.0")
-yt=$(echo "0.0")
+lower_limit_1=$(echo "1.0")
+upper_limit_1=$(echo "99.0")
+lower_limit_2=$(echo "10.0")
+upper_limit_2=$(echo "200.0")
 
 # ---- Optimiser - General ---- #
 # Number of Gen to save state / Communications
-checkpoint=100
+checkpoint=10
 
 # ---- Repository ---- #
 # [0,1] max porcentage of population from rep
@@ -33,20 +27,22 @@ kill_flag=True
 # Parameter to define number of generations allowed
 p_n=3
 # Max number of checkpoints reached without improving fmin
-n_0=10
+n_0=2
 # Number of best runs allowed to run max generations
-n_best_runs=5
+n_best_runs=2
 # Stall tolerance level (0, 1) - closer to one more exploration
-stall_tol=$(echo "0.01")
+stall_tol=$(echo "0.001")
 # Number of stall error for each optim - higher number more exploration
-n_stall=20
+n_stall=4
+# Max number of runs
+max_runs=10000
 
 # Experiment ID
-exp_id=10
+exp_id=$2
 
 # ---- MPI ---- #
 # Number of devices: n_workers + 1 (supervisor)
-n_devices=16
+n_devices=5
 
 # ---- Report ---- #
 # Report flag (0: optimise, 1: report)
@@ -55,17 +51,18 @@ report=$1
 if [ "$report" -eq 0 ]; then
   # ---- Run to Optimise ---- #
   mpirun -n $n_devices python3 main.py --n_devices $n_devices --report $report \
-  --n_param $n_param --lower_limit $lower_limit --upper_limit $upper_limit \
-  --xs $xs --ys $ys --xt $xt --yt $yt \
+  --n_param $n_param --lower_limit_1 $lower_limit_1 --upper_limit_1 $upper_limit_1 \
+  --lower_limit_2 $lower_limit_2 --upper_limit_2 $upper_limit_2 \
   --checkpoint $checkpoint --max_pop_from_rep $max_pop_from_rep --n_rep $n_rep \
   --init_prob $init_prob --kill_flag $kill_flag --p_n $p_n --n_0 $n_0 \
   --n_best_runs $n_best_runs --stall_tol $stall_tol --n_stall $n_stall  \
+  --max_runs $max_runs \
   --exp_id $exp_id
 else
   # ---- Run to Report ---- #
   python3 main.py --report $report \
-  --n_param $n_param --lower_limit $lower_limit --upper_limit $upper_limit \
-  --xs $xs --ys $ys --xt $xt --yt $yt \
+  --n_param $n_param --lower_limit_1 $lower_limit_1 --upper_limit_1 $upper_limit_1 \
+  --lower_limit_2 $lower_limit_2 --upper_limit_2 $upper_limit_2 \
   --checkpoint $checkpoint --max_pop_from_rep $max_pop_from_rep --n_rep $n_rep \
   --init_prob $init_prob --kill_flag $kill_flag --p_n $p_n --n_0 $n_0 \
   --n_best_runs $n_best_runs --stall_tol $stall_tol --n_stall $n_stall  \
